@@ -2,132 +2,194 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <!-- Cờ báo kích thước vuông cho iOS Widget -->
+    <meta name="viewport" content="width=360, height=360, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="windowSize" content="360 360" />
-    <title>Widget Tổng Hợp</title>
+    <title>Widget iOS</title>
     <style>
         :root {
             --text-main: #ffffff;
-            --text-muted: rgba(255, 255, 255, 0.85);
-            --bg-glass: rgba(255, 255, 255, 0.2);
-            --border-glass: rgba(255, 255, 255, 0.3);
-            --yellow-accent: #ffeb3b; 
-            --bg-gradient: linear-gradient(135deg, rgba(56, 189, 248, 0.9), rgba(37, 99, 235, 0.9));
+            --text-muted: rgba(255, 255, 255, 0.65);
+            --bg-glass: rgba(255, 255, 255, 0.12);
+            --border-glass: rgba(255, 255, 255, 0.2);
+            --red-highlight: #ef4444; 
+            --bg-gradient: linear-gradient(180deg, #1b2a4a 0%, #0d1627 100%);
         }
 
-        body {
+        * { box-sizing: border-box; }
+
+        html, body {
+            width: 360px;
+            height: 360px;
             margin: 0;
             padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: transparent; 
-            color: var(--text-main);
-            width: 100vw;
-            height: 100vh;
-            display: flex;
             overflow: hidden;
+            background: transparent !important;
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, sans-serif;
+            color: var(--text-main);
         }
 
         .widget-container {
-            width: 100%;
-            height: 100%;
+            width: 360px;
+            height: 360px;
             background: var(--bg-gradient);
-            backdrop-filter: blur(10px);
-            padding: 18px;
-            box-sizing: border-box;
+            padding: 12px 14px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
         }
 
-        /* KHU VỰC TRÊN CÙNG */
+        /* 1. TOP SECTION (Cao ~96px) */
         .top-section {
+            height: 96px;
             display: flex;
             justify-content: space-between;
+            align-items: flex-start;
         }
 
         .weather-main { flex: 1; }
-        .greeting { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
-        .temp-large { font-size: 44px; font-weight: 500; margin: 0; line-height: 1; display: flex; }
-        .temp-large sup { font-size: 18px; margin-top: 6px; }
-        .weather-desc { font-size: 12px; margin-top: 4px; color: var(--yellow-accent); font-weight: 600; text-transform: capitalize; }
-        .location { font-size: 11px; margin-top: 4px; font-weight: 600; }
-        .hl-temps { margin-top: 6px; }
-        .hl-badge { background: var(--bg-glass); padding: 4px 8px; border-radius: 12px; font-size: 10px; border: 1px solid var(--border-glass); }
+        .greeting { font-size: 12px; font-weight: 500; opacity: 0.9; }
+        .temp-large { font-size: 40px; font-weight: 300; line-height: 1; margin: 2px 0 0 0; display: flex; }
+        .temp-large sup { font-size: 18px; margin-top: 4px; }
+        .weather-desc { font-size: 11px; margin-top: 2px; color: var(--text-muted); font-weight: 500; }
+        .location { font-size: 10px; margin-top: 3px; font-weight: 600; opacity: 0.85; }
+
+        .hl-temps { display: flex; gap: 4px; margin-top: 4px; }
+        .hl-badge { 
+            background: var(--bg-glass); 
+            border: 1px solid var(--border-glass); 
+            padding: 2px 6px; 
+            border-radius: 10px; 
+            font-size: 9px; 
+        }
 
         .date-main { text-align: right; }
-        .month { font-size: 13px; font-weight: bold; text-transform: uppercase; margin-bottom: -4px;}
-        .date-large { font-size: 48px; font-weight: bold; line-height: 1; }
-        .day-week { font-size: 12px; font-weight: 600; margin-top: 4px; }
-        .lunar-badge { background: var(--bg-glass); padding: 4px 8px; border-radius: 12px; font-size: 10px; border: 1px solid var(--border-glass); margin-top: 6px; display: inline-block;}
+        .month { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+        .date-large { font-size: 46px; font-weight: 800; line-height: 1; margin: -2px 0; }
+        .day-week { font-size: 12px; font-weight: 600; }
+        .lunar-badge { 
+            background: var(--bg-glass); 
+            border: 1px solid var(--border-glass); 
+            padding: 2px 8px; 
+            border-radius: 10px; 
+            font-size: 9px; 
+            margin-top: 4px; 
+            display: inline-block;
+        }
 
-        /* KHU VỰC GIỮA */
+        /* 2. MIDDLE SECTION (Cao ~140px) */
         .mid-section {
+            height: 140px;
             display: flex;
-            gap: 12px;
-            flex: 1;
-            margin: 12px 0;
+            gap: 10px;
             align-items: center;
         }
 
         .events-list {
-            flex: 1;
+            flex: 0.9;
+            height: 100%;
             display: flex;
             flex-direction: column;
             justify-content: center;
+            gap: 6px;
+            padding-right: 8px;
             border-right: 1px solid var(--border-glass);
-            padding-right: 10px;
+            overflow: hidden;
         }
         
-        .quote-box { font-size: 12px; font-style: italic; line-height: 1.4; font-weight: 500;}
+        .event-item { position: relative; padding-left: 10px; }
+        .event-item::before { 
+            content: ''; 
+            position: absolute; 
+            left: 0; 
+            top: 5px; 
+            width: 4px; 
+            height: 4px; 
+            background: #ffffff; 
+            border-radius: 50%; 
+        }
+        .event-title { font-weight: 700; font-size: 11px; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .event-time { font-size: 9px; color: var(--text-muted); margin: 1px 0; font-style: italic; }
+        .event-tag { font-size: 9px; color: var(--text-muted); }
+
+        .quote-box { font-size: 10px; font-style: italic; line-height: 1.35; color: var(--text-muted); }
 
         .calendar-wrapper {
-            flex: 1.2;
+            flex: 1.1;
+            height: 100%;
             display: flex;
             flex-direction: column;
             justify-content: center;
         }
-        
+
         .cal-grid {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
             gap: 2px;
             text-align: center;
         }
-        .cal-header { font-weight: bold; color: var(--text-muted); margin-bottom: 4px; font-size: 9px;}
-        .cal-header.weekend { color: var(--yellow-accent); }
+        .cal-header { font-weight: 700; color: var(--text-muted); font-size: 9px; margin-bottom: 2px; }
+        .cal-header.sun { color: var(--red-highlight); }
         
         .cal-day { 
-            width: 22px; height: 22px;
+            width: 20px; 
+            height: 20px;
             border-radius: 50%; 
-            display: flex; flex-direction: column; justify-content: center; align-items: center; 
-            margin: auto; line-height: 1;
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center; 
+            margin: auto; 
+            line-height: 1;
         }
-        .cal-day .solar { font-size: 11px; font-weight: 600; }
-        .cal-day .lunar { font-size: 7px; margin-top: 1px; color: var(--text-muted); }
-        .cal-day.weekend { color: var(--yellow-accent); }
-        .cal-day.weekend .lunar { color: var(--yellow-accent); opacity: 0.9; }
-        .cal-day.muted { color: rgba(255, 255, 255, 0.4); }
-        .cal-day.muted .lunar { opacity: 0; }
-        .cal-day.active { background: #fff; color: #1e3a8a; }
-        .cal-day.active .lunar { color: #1e3a8a; font-weight: bold; }
+        .cal-day .solar { font-size: 10px; font-weight: 600; }
+        .cal-day .lunar { font-size: 6px; color: var(--text-muted); margin-top: 1px; }
+        .cal-day.sun { color: var(--red-highlight); }
+        .cal-day.sun .lunar { color: var(--red-highlight); opacity: 0.8; }
+        .cal-day.muted { opacity: 0.25; }
+        .cal-day.active { background: var(--red-highlight); color: #ffffff !important; }
+        .cal-day.active .lunar { color: #ffffff; opacity: 0.9; }
 
-        /* KHU VỰC DƯỚI CÙNG */
+        /* 3. BOTTOM SECTION (Cao ~80px) */
         .bottom-section {
+            height: 80px;
             display: flex;
-            justify-content: space-between;
+            align-items: center;
             border-top: 1px solid var(--border-glass);
-            padding-top: 8px;
+            padding-top: 4px;
         }
-        
-        .forecast-item { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 2px; flex: 1; }
-        .f-day { font-size: 9px; font-weight: bold; color: var(--yellow-accent); }
-        .f-icon { font-size: 15px; margin: 2px 0; }
-        .f-temp { font-size: 10px; font-weight: 600; }
-        .f-temp .min { color: var(--text-muted); font-weight: normal; margin-left: 2px; }
+
+        .b-left {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding-right: 8px;
+            border-right: 1px solid var(--border-glass);
+        }
+        .b-left-icon { font-size: 26px; }
+        .b-left-info { display: flex; flex-direction: column; }
+        .b-left-temp { font-size: 14px; font-weight: 700; }
+        .b-left-range { font-size: 8px; color: var(--text-muted); }
+
+        .b-forecast {
+            display: flex;
+            flex: 1;
+            justify-content: space-around;
+        }
+        .f-col {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1px;
+        }
+        .f-day { font-size: 8px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
+        .f-day.sun { color: var(--red-highlight); }
+        .f-icon { font-size: 13px; margin: 1px 0; }
+        .f-temp { font-size: 8px; display: flex; flex-direction: column; align-items: center; opacity: 0.9; }
+        .f-temp .min { color: var(--text-muted); }
     </style>
 </head>
 <body>
+
     <div class="widget-container">
         <!-- TOP SECTION -->
         <div class="top-section">
@@ -136,44 +198,60 @@
                 <div class="temp-large"><span id="cw-temp">--</span><sup>°</sup></div>
                 <div class="weather-desc" id="cw-desc">Đang tải...</div>
                 <div class="location">📍 Nam Định</div>
-                <div class="hl-temps"><div class="hl-badge" id="cw-humid">💧 --%</div></div>
+                <div class="hl-temps" id="hl-container">
+                    <div class="hl-badge" id="cw-humid">💧 --%</div>
+                </div>
             </div>
+            
             <div class="date-main">
                 <div class="month">THÁNG <span id="current-month">--</span></div>
                 <div class="date-large" id="current-date">--</div>
                 <div class="day-week" id="current-day">--</div>
-                <div class="lunar-badge" id="lunar-date">--/--</div>
+                <div class="lunar-badge" id="lunar-date">--/-- Âm</div>
             </div>
         </div>
 
         <!-- MIDDLE SECTION -->
         <div class="mid-section">
             <div class="events-list" id="events-container">
-                <div class="quote-box">"Đang tải dữ liệu..."</div>
+                <div class="quote-box">"Đang tải..."</div>
             </div>
+            
             <div class="calendar-wrapper">
-                <div class="cal-grid" id="calendar-header">
-                    <div class="cal-header">T2</div><div class="cal-header">T3</div><div class="cal-header">T4</div>
-                    <div class="cal-header">T5</div><div class="cal-header">T6</div><div class="cal-header weekend">T7</div>
-                    <div class="cal-header weekend">CN</div>
+                <div class="cal-grid">
+                    <div class="cal-header sun">CN</div>
+                    <div class="cal-header">T2</div>
+                    <div class="cal-header">T3</div>
+                    <div class="cal-header">T4</div>
+                    <div class="cal-header">T5</div>
+                    <div class="cal-header">T6</div>
+                    <div class="cal-header">T7</div>
                 </div>
                 <div class="cal-grid" id="calendar-days"></div>
             </div>
         </div>
 
         <!-- BOTTOM SECTION -->
-        <div class="bottom-section" id="forecast-container"></div>
+        <div class="bottom-section">
+            <div class="b-left">
+                <div class="b-left-icon" id="cur-icon">⛅</div>
+                <div class="b-left-info">
+                    <div class="b-left-temp"><span id="b-cur-temp">--</span>°C</div>
+                    <div class="b-left-range" id="b-cur-range">--° • --°</div>
+                </div>
+            </div>
+            <div class="b-forecast" id="forecast-container"></div>
+        </div>
     </div>
 
     <script>
         const API_KEY = '12fbb774abecc2ad4fe82b28334ac8ce'; 
         const currentLat = 20.43; 
         const currentLon = 106.17;
-        
-        // HÀM BẮT BUỘC ĐỂ WIDGET WEB CHỜ DỮ LIỆU
+
         let isWeatherLoaded = false;
         function __wweb2WaitMillisecondsToWidgetIsReady() {
-            return isWeatherLoaded ? 0 : 2500;
+            return isWeatherLoaded ? 0 : 2000;
         }
 
         const iconMap = {
@@ -183,12 +261,20 @@
             '11d':'⛈️','11n':'⛈️','13d':'❄️','13n':'❄️',
             '50d':'🌫️','50n':'🌫️'
         };
-        const daysVN = ["CN", "T2", "T3", "T4", "T5", "T6", "T7"];
+
+        const daysVNHeader = ["CN", "THỨ 2", "THỨ 3", "THỨ 4", "THỨ 5", "THỨ 6", "THỨ 7"];
+
+        function getLocalISODate(date) {
+            const offset = date.getTimezoneOffset() * 60000;
+            return new Date(date.getTime() - offset).toISOString().split('T')[0];
+        }
 
         function initCalendar() {
             try {
                 const now = new Date();
-                const y = now.getFullYear(); const m = now.getMonth(); const d = now.getDate();
+                const y = now.getFullYear(); 
+                const m = now.getMonth(); 
+                const d = now.getDate();
                 
                 document.getElementById('current-month').innerText = m + 1;
                 document.getElementById('current-date').innerText = d;
@@ -201,32 +287,41 @@
                     const parts = formatter.formatToParts(now);
                     const lDay = parts.find(p => p.type === 'day').value.padStart(2, '0');
                     const lMonth = parts.find(p => p.type === 'month').value.padStart(2, '0');
-                    document.getElementById('lunar-date').innerText = lDay + '/' + lMonth + ' Âm';
+                    
+                    const can = ["Canh", "Tân", "Nhâm", "Quý", "Giáp", "Ất", "Bính", "Đinh", "Mậu", "Kỷ"];
+                    const chi = ["Thân", "Dậu", "Tuất", "Hợi", "Tý", "Sửu", "Dần", "Mão", "Thìn", "Tỵ", "Ngọ", "Mùi"];
+                    const canChi = can[y % 10] + " " + chi[y % 12];
+                    
+                    document.getElementById('lunar-date').innerText = `${lDay}/${lMonth} ${canChi}`;
                 } catch (e) { document.getElementById('lunar-date').innerText = 'Âm lịch'; }
 
-                const firstDayOfMonth = new Date(y, m, 1).getDay();
-                const firstDay = firstDayOfMonth === 0 ? 6 : firstDayOfMonth - 1;
+                // Lịch bắt đầu từ CHỦ NHẬT (Index 0)
+                const firstDay = new Date(y, m, 1).getDay(); 
                 const daysInMonth = new Date(y, m + 1, 0).getDate();
                 const prevDays = new Date(y, m, 0).getDate();
                 
                 let html = '';
+                // Các ngày tháng trước
                 for (let i = 0; i < firstDay; i++) {
-                    html += `<div class="cal-day muted"><div class="solar">${prevDays - firstDay + i + 1}</div><div class="lunar"></div></div>`;
+                    let prevD = prevDays - firstDay + i + 1;
+                    html += `<div class="cal-day muted"><div class="solar">${prevD}</div><div class="lunar"></div></div>`;
                 }
                 
+                // Các ngày tháng hiện tại
                 for (let i = 1; i <= daysInMonth; i++) {
                     let dateObj = new Date(y, m, i);
-                    let dayOfWeek = dateObj.getDay(); 
-                    let isWeekend = (dayOfWeek === 0 || dayOfWeek === 6);
+                    let dayOfWeek = dateObj.getDay(); // 0: CN
+                    let isSun = (dayOfWeek === 0);
+                    
                     let cls = "cal-day";
-                    if (isWeekend) cls += " weekend";
+                    if (isSun) cls += " sun";
                     if (i === d) cls += " active";
                     
                     let lunarStr = '';
                     try {
                         const f = new Intl.DateTimeFormat('en-US-u-ca-chinese', { day: 'numeric' });
                         lunarStr = f.format(dateObj);
-                    } catch(e) { lunarStr = '-'; }
+                    } catch(e) { lunarStr = ''; }
 
                     html += `<div class="${cls}"><div class="solar">${i}</div><div class="lunar">${lunarStr}</div></div>`;
                 }
@@ -239,9 +334,12 @@
                 const curRes = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${currentLat}&lon=${currentLon}&appid=${API_KEY}&units=metric&lang=vi`);
                 const curData = await curRes.json();
                 
-                document.getElementById('cw-temp').innerText = Math.round(curData.main.temp);
+                const roundedTemp = Math.round(curData.main.temp);
+                document.getElementById('cw-temp').innerText = roundedTemp;
                 document.getElementById('cw-desc').innerText = curData.weather[0].description;
                 document.getElementById('cw-humid').innerText = `💧 Độ ẩm: ${curData.main.humidity}%`;
+                document.getElementById('b-cur-temp').innerText = roundedTemp;
+                document.getElementById('cur-icon').innerText = iconMap[curData.weather[0].icon] || '⛅';
 
                 const forRes = await fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${currentLat}&lon=${currentLon}&appid=${API_KEY}&units=metric`);
                 const forData = await forRes.json();
@@ -258,40 +356,84 @@
                     }
                 });
 
-                const dates = Object.keys(daily).slice(0, 5);
+                const dates = Object.keys(daily).slice(0, 6);
+                if (dates.length > 0) {
+                    const todayData = daily[dates[0]];
+                    document.getElementById('b-cur-range').innerText = `${Math.round(todayData.min)}° • ${Math.round(todayData.max)}°`;
+                }
+
                 let fHtml = '';
-                dates.forEach(dStr => {
+                dates.slice(0, 5).forEach(dStr => {
                     const dData = daily[dStr];
-                    const dName = daysVN[new Date(dStr).getDay()];
+                    const dObj = new Date(dStr);
+                    const dayIdx = dObj.getDay();
+                    const dName = daysVNHeader[dayIdx];
+                    const isSun = (dayIdx === 0);
                     const emoji = iconMap[dData.icon] || '⛅';
+                    
                     fHtml += `
-                        <div class="forecast-item">
-                            <div class="f-day">${dName}</div>
+                        <div class="f-col">
+                            <div class="f-day ${isSun ? 'sun' : ''}">${dName}</div>
                             <div class="f-icon">${emoji}</div>
-                            <div class="f-temp">${Math.round(dData.max)}°<span class="min">${Math.round(dData.min)}°</span></div>
+                            <div class="f-temp">
+                                <span>↓ ${Math.round(dData.min)}°</span>
+                                <span class="min">↑ ${Math.round(dData.max)}°</span>
+                            </div>
                         </div>
                     `;
                 });
                 document.getElementById('forecast-container').innerHTML = fHtml;
             } catch(e) {
-                document.getElementById('cw-desc').innerText = "Lỗi mạng";
+                document.getElementById('cw-desc').innerText = "Lỗi kết nối";
             } finally {
                 isWeatherLoaded = true;
             }
         }
 
-        function loadEvents() {
-            const quotes = [
-                "Hành trình vạn dặm bắt đầu từ một bước chân.",
-                "Sự vinh quang lớn nhất không nằm ở việc không bao giờ thất bại, mà ở việc đứng dậy sau mỗi lần vấp ngã.",
-                "Không có con đường dẫn đến hạnh phúc. Hạnh phúc chính là con đường."
-            ];
-            const q = quotes[Math.floor(Math.random() * quotes.length)];
-            document.getElementById('events-container').innerHTML = `<div class="quote-box">"${q}"</div>`;
+        async function fetchHolidays() {
+            const container = document.getElementById('events-container');
+            try {
+                const now = new Date();
+                const year = now.getFullYear();
+                const res = await fetch(`https://date.nager.at/api/v3/PublicHolidays/${year}/VN`);
+                const publicHolidays = await res.json();
+
+                const extraEvents = [
+                    { date: `${year}-03-08`, localName: "Quốc tế Phụ nữ", type: "Ngày lễ Việt Nam" },
+                    { date: `${year}-09-25`, localName: "Tết Trung thu", type: "Ngày lễ Việt Nam" },
+                    { date: `${year}-10-20`, localName: "Phụ nữ Việt Nam", type: "Ngày lễ Việt Nam" },
+                    { date: `${year}-11-20`, localName: "Nhà giáo Việt Nam", type: "Ngày lễ Việt Nam" }
+                ];
+
+                let allEvents = publicHolidays.map(h => ({ date: h.date, localName: h.localName, type: "Ngày lễ Việt Nam" }));
+                extraEvents.forEach(e => { if (!allEvents.some(item => item.date === e.date)) allEvents.push(e); });
+
+                const startStr = getLocalISODate(now);
+                const upcoming = allEvents.filter(e => e.date >= startStr).sort((a,b) => a.date.localeCompare(b.date));
+
+                if (upcoming.length > 0) {
+                    container.innerHTML = '';
+                    upcoming.slice(0, 2).forEach(ev => {
+                        const parts = ev.date.split('-');
+                        const formattedDate = `${parts[2]}-${parts[1]}`;
+                        container.innerHTML += `
+                            <div class="event-item">
+                                <p class="event-title">${ev.localName}</p>
+                                <p class="event-time">${formattedDate} All Day</p>
+                                <p class="event-tag">${ev.type}</p>
+                            </div>
+                        `;
+                    });
+                } else {
+                    container.innerHTML = `<div class="quote-box">"Chúc bạn một ngày làm việc hiệu quả và vui vẻ!"</div>`;
+                }
+            } catch (e) {
+                container.innerHTML = `<div class="quote-box">"Sự vinh quang lớn nhất nằm ở việc đứng dậy sau mỗi lần vấp ngã."</div>`;
+            }
         }
 
         initCalendar();
-        loadEvents();
+        fetchHolidays();
         fetchWeather();
     </script>
 </body>
