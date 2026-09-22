@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=360, height=360, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="windowSize" content="360 360" />
     <title>Widget iOS</title>
     <style>
@@ -18,8 +18,8 @@
         * { box-sizing: border-box; }
 
         html, body {
-            width: 360px;
-            height: 360px;
+            width: 100vw;
+            height: 100vh;
             margin: 0;
             padding: 0;
             overflow: hidden;
@@ -29,18 +29,17 @@
         }
 
         .widget-container {
-            width: 360px;
-            height: 360px;
+            width: 100%;
+            height: 100%;
             background: var(--bg-gradient);
-            padding: 12px 14px;
+            padding: 12px 14px 10px 14px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
         }
 
-        /* 1. TOP SECTION (Cao ~96px) */
+        /* 1. TOP SECTION */
         .top-section {
-            height: 96px;
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
@@ -48,9 +47,9 @@
 
         .weather-main { flex: 1; }
         .greeting { font-size: 12px; font-weight: 500; opacity: 0.9; }
-        .temp-large { font-size: 40px; font-weight: 300; line-height: 1; margin: 2px 0 0 0; display: flex; }
+        .temp-large { font-size: 38px; font-weight: 300; line-height: 1; margin: 2px 0 0 0; display: flex; }
         .temp-large sup { font-size: 18px; margin-top: 4px; }
-        .weather-desc { font-size: 11px; margin-top: 2px; color: var(--text-muted); font-weight: 500; }
+        .weather-desc { font-size: 11px; margin-top: 2px; color: var(--text-muted); font-weight: 500; text-transform: capitalize; }
         .location { font-size: 10px; margin-top: 3px; font-weight: 600; opacity: 0.85; }
 
         .hl-temps { display: flex; gap: 4px; margin-top: 4px; }
@@ -64,7 +63,7 @@
 
         .date-main { text-align: right; }
         .month { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
-        .date-large { font-size: 46px; font-weight: 800; line-height: 1; margin: -2px 0; }
+        .date-large { font-size: 44px; font-weight: 800; line-height: 1; margin: -2px 0; }
         .day-week { font-size: 12px; font-weight: 600; }
         .lunar-badge { 
             background: var(--bg-glass); 
@@ -76,24 +75,25 @@
             display: inline-block;
         }
 
-        /* 2. MIDDLE SECTION (Cao ~140px) */
+        /* 2. MIDDLE SECTION */
         .mid-section {
-            height: 140px;
+            flex: 1; /* Tự động co giãn để đẩy bottom-section xuống đáy */
             display: flex;
             gap: 10px;
             align-items: center;
+            margin: 6px 0;
+            overflow: hidden;
         }
 
         .events-list {
             flex: 0.9;
-            height: 100%;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            gap: 6px;
+            gap: 5px;
             padding-right: 8px;
             border-right: 1px solid var(--border-glass);
-            overflow: hidden;
+            height: 100%;
         }
         
         .event-item { position: relative; padding-left: 10px; }
@@ -115,10 +115,10 @@
 
         .calendar-wrapper {
             flex: 1.1;
-            height: 100%;
             display: flex;
             flex-direction: column;
             justify-content: center;
+            height: 100%;
         }
 
         .cal-grid {
@@ -128,7 +128,7 @@
             text-align: center;
         }
         .cal-header { font-weight: 700; color: var(--text-muted); font-size: 9px; margin-bottom: 2px; }
-        .cal-header.sun { color: var(--red-highlight); }
+        .cal-header.weekend { color: var(--red-highlight); }
         
         .cal-day { 
             width: 20px; 
@@ -143,19 +143,19 @@
         }
         .cal-day .solar { font-size: 10px; font-weight: 600; }
         .cal-day .lunar { font-size: 6px; color: var(--text-muted); margin-top: 1px; }
-        .cal-day.sun { color: var(--red-highlight); }
-        .cal-day.sun .lunar { color: var(--red-highlight); opacity: 0.8; }
+        
+        .cal-day.weekend { color: var(--red-highlight); }
+        .cal-day.weekend .lunar { color: var(--red-highlight); opacity: 0.8; }
         .cal-day.muted { opacity: 0.25; }
         .cal-day.active { background: var(--red-highlight); color: #ffffff !important; }
         .cal-day.active .lunar { color: #ffffff; opacity: 0.9; }
 
-        /* 3. BOTTOM SECTION (Cao ~80px) */
+        /* 3. BOTTOM SECTION */
         .bottom-section {
-            height: 80px;
             display: flex;
             align-items: center;
             border-top: 1px solid var(--border-glass);
-            padding-top: 4px;
+            padding-top: 6px;
         }
 
         .b-left {
@@ -165,9 +165,9 @@
             padding-right: 8px;
             border-right: 1px solid var(--border-glass);
         }
-        .b-left-icon { font-size: 26px; }
+        .b-left-icon { font-size: 24px; }
         .b-left-info { display: flex; flex-direction: column; }
-        .b-left-temp { font-size: 14px; font-weight: 700; }
+        .b-left-temp { font-size: 13px; font-weight: 700; }
         .b-left-range { font-size: 8px; color: var(--text-muted); }
 
         .b-forecast {
@@ -182,7 +182,7 @@
             gap: 1px;
         }
         .f-day { font-size: 8px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
-        .f-day.sun { color: var(--red-highlight); }
+        .f-day.weekend { color: var(--red-highlight); }
         .f-icon { font-size: 13px; margin: 1px 0; }
         .f-temp { font-size: 8px; display: flex; flex-direction: column; align-items: center; opacity: 0.9; }
         .f-temp .min { color: var(--text-muted); }
@@ -219,13 +219,13 @@
             
             <div class="calendar-wrapper">
                 <div class="cal-grid">
-                    <div class="cal-header sun">CN</div>
                     <div class="cal-header">T2</div>
                     <div class="cal-header">T3</div>
                     <div class="cal-header">T4</div>
                     <div class="cal-header">T5</div>
                     <div class="cal-header">T6</div>
-                    <div class="cal-header">T7</div>
+                    <div class="cal-header weekend">T7</div>
+                    <div class="cal-header weekend">CN</div>
                 </div>
                 <div class="cal-grid" id="calendar-days"></div>
             </div>
@@ -269,6 +269,17 @@
             return new Date(date.getTime() - offset).toISOString().split('T')[0];
         }
 
+        // Hàm trích xuất ngày âm lịch, hiển thị kèm tháng nếu là mùng 1
+        function getLunarDayMonth(date) {
+            try {
+                const formatter = new Intl.DateTimeFormat('en-US-u-ca-chinese', { day: 'numeric', month: 'numeric' });
+                const parts = formatter.formatToParts(date);
+                const lDay = parts.find(p => p.type === 'day').value;
+                const lMonth = parts.find(p => p.type === 'month').value;
+                return lDay === '1' ? `${lDay}/${lMonth}` : lDay;
+            } catch (e) { return ''; }
+        }
+
         function initCalendar() {
             try {
                 const now = new Date();
@@ -295,33 +306,35 @@
                     document.getElementById('lunar-date').innerText = `${lDay}/${lMonth} ${canChi}`;
                 } catch (e) { document.getElementById('lunar-date').innerText = 'Âm lịch'; }
 
-                // Lịch bắt đầu từ CHỦ NHẬT (Index 0)
-                const firstDay = new Date(y, m, 1).getDay(); 
+                // Tính toán để Lịch bắt đầu từ THỨ 2 (Index 0) -> CHỦ NHẬT (Index 6)
+                const firstDayOfMonthJS = new Date(y, m, 1).getDay(); 
+                const firstDayIdx = (firstDayOfMonthJS + 6) % 7; 
+                
                 const daysInMonth = new Date(y, m + 1, 0).getDate();
                 const prevDays = new Date(y, m, 0).getDate();
                 
                 let html = '';
-                // Các ngày tháng trước
-                for (let i = 0; i < firstDay; i++) {
-                    let prevD = prevDays - firstDay + i + 1;
-                    html += `<div class="cal-day muted"><div class="solar">${prevD}</div><div class="lunar"></div></div>`;
+                
+                // Đổ các ngày của tháng trước
+                for (let i = 0; i < firstDayIdx; i++) {
+                    let prevD = prevDays - firstDayIdx + i + 1;
+                    let prevDateObj = new Date(y, m - 1, prevD);
+                    let lunarStr = getLunarDayMonth(prevDateObj);
+                    html += `<div class="cal-day muted"><div class="solar">${prevD}</div><div class="lunar">${lunarStr}</div></div>`;
                 }
                 
-                // Các ngày tháng hiện tại
+                // Đổ các ngày của tháng hiện tại
                 for (let i = 1; i <= daysInMonth; i++) {
                     let dateObj = new Date(y, m, i);
-                    let dayOfWeek = dateObj.getDay(); // 0: CN
-                    let isSun = (dayOfWeek === 0);
+                    let jsDay = dateObj.getDay(); 
+                    let mappedIdx = (jsDay + 6) % 7;
+                    let isWeekend = (mappedIdx === 5 || mappedIdx === 6); // T7 hoặc CN
                     
                     let cls = "cal-day";
-                    if (isSun) cls += " sun";
+                    if (isWeekend) cls += " weekend";
                     if (i === d) cls += " active";
                     
-                    let lunarStr = '';
-                    try {
-                        const f = new Intl.DateTimeFormat('en-US-u-ca-chinese', { day: 'numeric' });
-                        lunarStr = f.format(dateObj);
-                    } catch(e) { lunarStr = ''; }
+                    let lunarStr = getLunarDayMonth(dateObj);
 
                     html += `<div class="${cls}"><div class="solar">${i}</div><div class="lunar">${lunarStr}</div></div>`;
                 }
@@ -368,12 +381,12 @@
                     const dObj = new Date(dStr);
                     const dayIdx = dObj.getDay();
                     const dName = daysVNHeader[dayIdx];
-                    const isSun = (dayIdx === 0);
+                    const isWeekend = (dayIdx === 0 || dayIdx === 6);
                     const emoji = iconMap[dData.icon] || '⛅';
                     
                     fHtml += `
                         <div class="f-col">
-                            <div class="f-day ${isSun ? 'sun' : ''}">${dName}</div>
+                            <div class="f-day ${isWeekend ? 'weekend' : ''}">${dName}</div>
                             <div class="f-icon">${emoji}</div>
                             <div class="f-temp">
                                 <span>↓ ${Math.round(dData.min)}°</span>
