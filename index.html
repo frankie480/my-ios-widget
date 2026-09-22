@@ -2,30 +2,29 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <!-- Cố định viewport thành một khối vuông để đồng bộ với khung cắt -->
     <meta name="viewport" content="width=380, height=380, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="windowSize" content="380 380" />
     <title>Widget iOS</title>
     <style>
         :root {
             --text-main: #ffffff;
-            --text-muted: rgba(255, 255, 255, 0.65);
-            --bg-glass: rgba(255, 255, 255, 0.12);
-            --border-glass: rgba(255, 255, 255, 0.2);
+            --text-muted: rgba(255, 255, 255, 0.7);
+            --bg-glass: rgba(255, 255, 255, 0.15);
+            --border-glass: rgba(255, 255, 255, 0.25);
             --red-highlight: #ef4444; 
-            --bg-gradient: linear-gradient(180deg, #1b2a4a 0%, #0d1627 100%);
+            /* Đổi thành màu trơn hoàn toàn để app dễ dàng lọc (Keying) thành trong suốt */
+            --bg-solid: #000000; 
         }
 
         * { box-sizing: border-box; }
 
         html, body {
-            /* Cố định kích thước hình vuông và phủ nền tràn viền (bleed area) */
             width: 380px;
             height: 380px;
             margin: 0;
             padding: 0;
             overflow: hidden;
-            background: var(--bg-gradient) !important;
+            background: var(--bg-solid) !important;
             font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, sans-serif;
             color: var(--text-main);
             display: flex;
@@ -36,11 +35,11 @@
         .widget-container {
             width: 100%;
             height: 100%;
-            /* Padding mặc định + thêm 10px mỗi chiều làm vùng an toàn (Safe Area) */
             padding: 22px 24px; 
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            background: var(--bg-solid);
         }
 
         /* 1. TOP SECTION */
@@ -313,7 +312,6 @@
                     document.getElementById('lunar-date').innerText = `${lDay}/${lMonth} ${canChi}`;
                 } catch (e) { document.getElementById('lunar-date').innerText = 'Âm lịch'; }
 
-                // Tính toán để Lịch bắt đầu từ THỨ 2 (Index 0) -> CHỦ NHẬT (Index 6)
                 const firstDayOfMonthJS = new Date(y, m, 1).getDay(); 
                 const firstDayIdx = (firstDayOfMonthJS + 6) % 7; 
                 
@@ -322,7 +320,6 @@
                 
                 let html = '';
                 
-                // Các ngày tháng trước
                 for (let i = 0; i < firstDayIdx; i++) {
                     let prevD = prevDays - firstDayIdx + i + 1;
                     let prevDateObj = new Date(y, m - 1, prevD);
@@ -330,12 +327,11 @@
                     html += `<div class="cal-day muted"><div class="solar">${prevD}</div><div class="lunar">${lunarStr}</div></div>`;
                 }
                 
-                // Các ngày tháng hiện tại
                 for (let i = 1; i <= daysInMonth; i++) {
                     let dateObj = new Date(y, m, i);
                     let jsDay = dateObj.getDay(); 
                     let mappedIdx = (jsDay + 6) % 7;
-                    let isWeekend = (mappedIdx === 5 || mappedIdx === 6); // T7 hoặc CN
+                    let isWeekend = (mappedIdx === 5 || mappedIdx === 6); 
                     
                     let cls = "cal-day";
                     if (isWeekend) cls += " weekend";
