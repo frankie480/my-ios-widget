@@ -2,8 +2,9 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="windowSize" content="360 360" />
+    <!-- Cố định viewport thành một khối vuông để đồng bộ với khung cắt -->
+    <meta name="viewport" content="width=380, height=380, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="windowSize" content="380 380" />
     <title>Widget iOS</title>
     <style>
         :root {
@@ -18,21 +19,25 @@
         * { box-sizing: border-box; }
 
         html, body {
-            width: 100vw;
-            height: 100vh;
+            /* Cố định kích thước hình vuông và phủ nền tràn viền (bleed area) */
+            width: 380px;
+            height: 380px;
             margin: 0;
             padding: 0;
             overflow: hidden;
-            background: transparent !important;
+            background: var(--bg-gradient) !important;
             font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, sans-serif;
             color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .widget-container {
             width: 100%;
             height: 100%;
-            background: var(--bg-gradient);
-            padding: 12px 14px 10px 14px;
+            /* Padding mặc định + thêm 10px mỗi chiều làm vùng an toàn (Safe Area) */
+            padding: 22px 24px; 
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -43,6 +48,7 @@
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
+            height: 96px;
         }
 
         .weather-main { flex: 1; }
@@ -77,11 +83,11 @@
 
         /* 2. MIDDLE SECTION */
         .mid-section {
-            flex: 1; /* Tự động co giãn để đẩy bottom-section xuống đáy */
+            flex: 1; 
             display: flex;
-            gap: 10px;
+            gap: 12px;
             align-items: center;
-            margin: 6px 0;
+            margin: 8px 0;
             overflow: hidden;
         }
 
@@ -90,8 +96,8 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
-            gap: 5px;
-            padding-right: 8px;
+            gap: 6px;
+            padding-right: 10px;
             border-right: 1px solid var(--border-glass);
             height: 100%;
         }
@@ -127,12 +133,12 @@
             gap: 2px;
             text-align: center;
         }
-        .cal-header { font-weight: 700; color: var(--text-muted); font-size: 9px; margin-bottom: 2px; }
+        .cal-header { font-weight: 700; color: var(--text-muted); font-size: 9px; margin-bottom: 4px; }
         .cal-header.weekend { color: var(--red-highlight); }
         
         .cal-day { 
-            width: 20px; 
-            height: 20px;
+            width: 22px; 
+            height: 22px;
             border-radius: 50%; 
             display: flex; 
             flex-direction: column; 
@@ -155,20 +161,21 @@
             display: flex;
             align-items: center;
             border-top: 1px solid var(--border-glass);
-            padding-top: 6px;
+            padding-top: 10px;
+            height: 80px;
         }
 
         .b-left {
             display: flex;
             align-items: center;
             gap: 6px;
-            padding-right: 8px;
+            padding-right: 10px;
             border-right: 1px solid var(--border-glass);
         }
         .b-left-icon { font-size: 24px; }
         .b-left-info { display: flex; flex-direction: column; }
-        .b-left-temp { font-size: 13px; font-weight: 700; }
-        .b-left-range { font-size: 8px; color: var(--text-muted); }
+        .b-left-temp { font-size: 14px; font-weight: 700; }
+        .b-left-range { font-size: 9px; color: var(--text-muted); }
 
         .b-forecast {
             display: flex;
@@ -179,12 +186,12 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 1px;
+            gap: 2px;
         }
         .f-day { font-size: 8px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
         .f-day.weekend { color: var(--red-highlight); }
-        .f-icon { font-size: 13px; margin: 1px 0; }
-        .f-temp { font-size: 8px; display: flex; flex-direction: column; align-items: center; opacity: 0.9; }
+        .f-icon { font-size: 14px; margin: 1px 0; }
+        .f-temp { font-size: 9px; display: flex; flex-direction: column; align-items: center; opacity: 0.9; }
         .f-temp .min { color: var(--text-muted); }
     </style>
 </head>
@@ -269,7 +276,7 @@
             return new Date(date.getTime() - offset).toISOString().split('T')[0];
         }
 
-        // Hàm trích xuất ngày âm lịch, hiển thị kèm tháng nếu là mùng 1
+        // Lấy ngày âm lịch, hiện kèm tháng nếu là mùng 1
         function getLunarDayMonth(date) {
             try {
                 const formatter = new Intl.DateTimeFormat('en-US-u-ca-chinese', { day: 'numeric', month: 'numeric' });
@@ -315,7 +322,7 @@
                 
                 let html = '';
                 
-                // Đổ các ngày của tháng trước
+                // Các ngày tháng trước
                 for (let i = 0; i < firstDayIdx; i++) {
                     let prevD = prevDays - firstDayIdx + i + 1;
                     let prevDateObj = new Date(y, m - 1, prevD);
@@ -323,7 +330,7 @@
                     html += `<div class="cal-day muted"><div class="solar">${prevD}</div><div class="lunar">${lunarStr}</div></div>`;
                 }
                 
-                // Đổ các ngày của tháng hiện tại
+                // Các ngày tháng hiện tại
                 for (let i = 1; i <= daysInMonth; i++) {
                     let dateObj = new Date(y, m, i);
                     let jsDay = dateObj.getDay(); 
@@ -335,7 +342,6 @@
                     if (i === d) cls += " active";
                     
                     let lunarStr = getLunarDayMonth(dateObj);
-
                     html += `<div class="${cls}"><div class="solar">${i}</div><div class="lunar">${lunarStr}</div></div>`;
                 }
                 document.getElementById('calendar-days').innerHTML = html;
