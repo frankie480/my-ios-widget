@@ -8,12 +8,10 @@
     <style>
         :root {
             --text-main: #ffffff;
-            --text-muted: rgba(255, 255, 255, 0.7);
+            --text-muted: rgba(255, 255, 255, 0.75);
             --bg-glass: rgba(255, 255, 255, 0.15);
             --border-glass: rgba(255, 255, 255, 0.25);
             --red-highlight: #ef4444; 
-            /* Đổi thành màu trơn hoàn toàn để app dễ dàng lọc (Keying) thành trong suốt */
-            --bg-solid: #000000; 
         }
 
         * { box-sizing: border-box; }
@@ -24,7 +22,17 @@
             margin: 0;
             padding: 0;
             overflow: hidden;
-            background: var(--bg-solid) !important;
+            
+            /* --- CẤU HÌNH NỀN TRONG SUỐT GIẢ LẬP --- */
+background-image: 
+    linear-gradient(rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.25)),
+    url('Background-ios.jpg'); /* Đổi trực tiếp thành tên file ảnh */
+            
+            background-size: 393px 852px; /* Ép kích thước ảnh theo chuẩn màn hình iPhone 14 Pro */
+            background-position: -6.5px -76px; /* Dịch chuyển tọa độ X, Y để khớp với vị trí đặt widget */
+            background-repeat: no-repeat;
+            /* -------------------------------------- */
+
             font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, sans-serif;
             color: var(--text-main);
             display: flex;
@@ -39,7 +47,7 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            background: var(--bg-solid);
+            background: transparent; /* Bắt buộc trong suốt để lộ ảnh nền */
         }
 
         /* 1. TOP SECTION */
@@ -51,8 +59,8 @@
         }
 
         .weather-main { flex: 1; }
-        .greeting { font-size: 12px; font-weight: 500; opacity: 0.9; }
-        .temp-large { font-size: 38px; font-weight: 300; line-height: 1; margin: 2px 0 0 0; display: flex; }
+        .greeting { font-size: 12px; font-weight: 500; opacity: 0.9; text-shadow: 0 1px 2px rgba(0,0,0,0.3); }
+        .temp-large { font-size: 38px; font-weight: 300; line-height: 1; margin: 2px 0 0 0; display: flex; text-shadow: 0 1px 4px rgba(0,0,0,0.2); }
         .temp-large sup { font-size: 18px; margin-top: 4px; }
         .weather-desc { font-size: 11px; margin-top: 2px; color: var(--text-muted); font-weight: 500; text-transform: capitalize; }
         .location { font-size: 10px; margin-top: 3px; font-weight: 600; opacity: 0.85; }
@@ -64,12 +72,14 @@
             padding: 2px 6px; 
             border-radius: 10px; 
             font-size: 9px; 
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
         }
 
         .date-main { text-align: right; }
-        .month { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
-        .date-large { font-size: 44px; font-weight: 800; line-height: 1; margin: -2px 0; }
-        .day-week { font-size: 12px; font-weight: 600; }
+        .month { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; text-shadow: 0 1px 2px rgba(0,0,0,0.4); }
+        .date-large { font-size: 44px; font-weight: 800; line-height: 1; margin: -2px 0; text-shadow: 0 2px 5px rgba(0,0,0,0.4); }
+        .day-week { font-size: 12px; font-weight: 600; text-shadow: 0 1px 2px rgba(0,0,0,0.4); }
         .lunar-badge { 
             background: var(--bg-glass); 
             border: 1px solid var(--border-glass); 
@@ -78,6 +88,8 @@
             font-size: 9px; 
             margin-top: 4px; 
             display: inline-block;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
         }
 
         /* 2. MIDDLE SECTION */
@@ -111,12 +123,13 @@
             height: 4px; 
             background: #ffffff; 
             border-radius: 50%; 
+            box-shadow: 0 0 2px rgba(0,0,0,0.5);
         }
-        .event-title { font-weight: 700; font-size: 11px; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .event-title { font-weight: 700; font-size: 11px; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-shadow: 0 1px 2px rgba(0,0,0,0.3); }
         .event-time { font-size: 9px; color: var(--text-muted); margin: 1px 0; font-style: italic; }
         .event-tag { font-size: 9px; color: var(--text-muted); }
 
-        .quote-box { font-size: 10px; font-style: italic; line-height: 1.35; color: var(--text-muted); }
+        .quote-box { font-size: 10px; font-style: italic; line-height: 1.35; color: var(--text-muted); text-shadow: 0 1px 2px rgba(0,0,0,0.3); }
 
         .calendar-wrapper {
             flex: 1.1;
@@ -132,8 +145,8 @@
             gap: 2px;
             text-align: center;
         }
-        .cal-header { font-weight: 700; color: var(--text-muted); font-size: 9px; margin-bottom: 4px; }
-        .cal-header.weekend { color: var(--red-highlight); }
+        .cal-header { font-weight: 700; color: var(--text-muted); font-size: 9px; margin-bottom: 4px; text-shadow: 0 1px 2px rgba(0,0,0,0.3); }
+        .cal-header.weekend { color: var(--red-highlight); text-shadow: 0 1px 2px rgba(0,0,0,0.3); }
         
         .cal-day { 
             width: 22px; 
@@ -145,14 +158,15 @@
             align-items: center; 
             margin: auto; 
             line-height: 1;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
         }
         .cal-day .solar { font-size: 10px; font-weight: 600; }
         .cal-day .lunar { font-size: 6px; color: var(--text-muted); margin-top: 1px; }
         
         .cal-day.weekend { color: var(--red-highlight); }
-        .cal-day.weekend .lunar { color: var(--red-highlight); opacity: 0.8; }
-        .cal-day.muted { opacity: 0.25; }
-        .cal-day.active { background: var(--red-highlight); color: #ffffff !important; }
+        .cal-day.weekend .lunar { color: rgba(239, 68, 68, 0.8); }
+        .cal-day.muted { opacity: 0.4; }
+        .cal-day.active { background: var(--red-highlight); color: #ffffff !important; text-shadow: none; box-shadow: 0 2px 4px rgba(0,0,0,0.3); }
         .cal-day.active .lunar { color: #ffffff; opacity: 0.9; }
 
         /* 3. BOTTOM SECTION */
@@ -171,8 +185,8 @@
             padding-right: 10px;
             border-right: 1px solid var(--border-glass);
         }
-        .b-left-icon { font-size: 24px; }
-        .b-left-info { display: flex; flex-direction: column; }
+        .b-left-icon { font-size: 24px; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.4)); }
+        .b-left-info { display: flex; flex-direction: column; text-shadow: 0 1px 2px rgba(0,0,0,0.3); }
         .b-left-temp { font-size: 14px; font-weight: 700; }
         .b-left-range { font-size: 9px; color: var(--text-muted); }
 
@@ -186,10 +200,11 @@
             flex-direction: column;
             align-items: center;
             gap: 2px;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
         }
         .f-day { font-size: 8px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
         .f-day.weekend { color: var(--red-highlight); }
-        .f-icon { font-size: 14px; margin: 1px 0; }
+        .f-icon { font-size: 14px; margin: 1px 0; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.3)); }
         .f-temp { font-size: 9px; display: flex; flex-direction: column; align-items: center; opacity: 0.9; }
         .f-temp .min { color: var(--text-muted); }
     </style>
@@ -275,7 +290,6 @@
             return new Date(date.getTime() - offset).toISOString().split('T')[0];
         }
 
-        // Lấy ngày âm lịch, hiện kèm tháng nếu là mùng 1
         function getLunarDayMonth(date) {
             try {
                 const formatter = new Intl.DateTimeFormat('en-US-u-ca-chinese', { day: 'numeric', month: 'numeric' });
