@@ -1,659 +1,469 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="applicationTitle" content="Lo-Fi Dashboard" />
-<meta name="windowSize" content="680 660" />
-<meta name="windowLocation" content="100 100" />
-<meta name="topMost" content="false" />
-<title>Lo-Fi Dashboard</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-<style>
-    :root {
-        --ink: #e8f0fc;
-        --ink-2: rgba(232, 240, 252, 0.64);
-        --ink-3: rgba(232, 240, 252, 0.42);
-        --accent: #8ec5ff;
-        --accent-ink: #0f1b32;
-        --shell: rgba(14, 26, 49, 0.74);      /* lower the last number for a more see-through widget */
-        --tile: rgba(40, 64, 108, 0.46);
-        --inset: rgba(10, 20, 40, 0.42);
-        --line: rgba(232, 240, 252, 0.09);
-        --sans: 'Be Vietnam Pro', 'Segoe UI', system-ui, sans-serif;
-        --mono: 'DM Mono', ui-monospace, Consolas, monospace;
-    }
-    * { box-sizing: border-box; }
-    [hidden] { display: none !important; }
-    html, body { margin: 0; height: 100%; background: transparent !important; overflow: hidden; }
-    body { font-family: var(--sans); font-size: 13px; color: var(--ink); user-select: none; }
-    input { user-select: text; }
-    button { font-family: inherit; color: inherit; }
-    button:focus-visible, input:focus-visible, .tm-time:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=380, height=380, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="windowSize" content="380 380" />
+    <title>Widget iOS</title>
+    <style>
+        :root {
+            --text-main: #ffffff;
+            --text-muted: rgba(255, 255, 255, 0.75);
+            --bg-glass: rgba(255, 255, 255, 0.15);
+            --border-glass: rgba(255, 255, 255, 0.25);
+            --red-highlight: #ef4444; 
+        }
 
-    .shell {
-        position: relative; height: 100%; padding: 12px; border-radius: 22px; overflow: hidden;
-        display: flex; flex-direction: column; gap: 10px;
-        background: var(--shell); backdrop-filter: blur(18px) saturate(120%);
-        border: 1px solid rgba(232, 240, 252, 0.12); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
-    }
-    .shell::after {
-        content: ''; position: absolute; inset: 0; pointer-events: none; opacity: 0.06; mix-blend-mode: overlay;
-        background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
-    }
-    .tile { min-width: 0; min-height: 0; padding: 14px; border-radius: 16px; background: var(--tile); border: 1px solid var(--line); }
-    .muted { color: var(--ink-2); }
-    .ico { width: 16px; height: 16px; flex: none; display: inline-flex; }
-    .ico svg { width: 100%; height: 100%; }
+        * { box-sizing: border-box; }
 
-    /* clock */
-    .clock { display: flex; justify-content: space-between; align-items: center; gap: 20px; }
-    .time { font: 400 54px/1.1 var(--mono); letter-spacing: -1px; }
-    .time .sec { font-size: 22px; color: var(--ink-3); letter-spacing: 0; }
-    .dates { margin-top: 2px; display: flex; flex-wrap: wrap; gap: 4px 10px; }
-    .dates .lunar { color: var(--accent); }
-    .quote { margin: 0; max-width: 44%; text-align: right; font-size: 13px; line-height: 1.5; color: var(--ink-2); }
-    .quote blockquote { margin: 0; font-style: italic; }
-    .quote blockquote { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 5; overflow: hidden; }
-    .quote figcaption { margin-top: 4px; font-size: 12px; color: var(--ink-3); }
-    .quote figcaption:empty { display: none; }
-    .quote[data-size=m] { max-width: 50%; font-size: 12px; line-height: 1.45; }
-    .quote[data-size=m] blockquote { -webkit-line-clamp: 7; }
-    .quote[data-size=l] { max-width: 56%; font-size: 11px; line-height: 1.4; }
-    .quote[data-size=l] blockquote { -webkit-line-clamp: 9; }
+        html, body {
+            width: 380px;
+            height: 380px;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            
+            /* --- CẤU HÌNH NỀN TRONG SUỐT GIẢ LẬP --- */
+background-image: 
+    linear-gradient(rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.25)),
+    url('Background-ios.jpg'); /* Đổi trực tiếp thành tên file ảnh */
+            
+            background-size: 393px 852px; /* Ép kích thước ảnh theo chuẩn màn hình iPhone 14 Pro */
+            background-position: -6.5px -76px; /* Dịch chuyển tọa độ X, Y để khớp với vị trí đặt widget */
+            background-repeat: no-repeat;
+            /* -------------------------------------- */
 
-    /* middle */
-    .mid { flex: 1; min-height: 0; display: grid; grid-template-columns: 1.12fr 1fr; gap: 10px; }
-    .stack { min-height: 0; display: flex; flex-direction: column; gap: 10px; }
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, sans-serif;
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
-    /* calendar */
-    .cal { display: flex; flex-direction: column; padding: 12px 10px; }
-    .cal-head { display: flex; justify-content: space-between; align-items: center; padding: 0 4px 6px; }
-    .cal-head button { background: none; border: 0; cursor: pointer; }
-    .cal-head .nav { width: 26px; height: 26px; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--ink-2); }
-    .cal-head .nav:hover { background: rgba(232, 240, 252, 0.1); color: var(--ink); }
-    .cal-title { font-size: 14px; font-weight: 500; padding: 4px 8px; border-radius: 8px; }
-    .cal-title:hover { background: rgba(232, 240, 252, 0.1); }
-    .dow, .days { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; }
-    .dow div { font-size: 11px; color: var(--ink-3); padding: 2px 0 4px; }
-    .days { flex: 1; min-height: 0; grid-auto-rows: 1fr; gap: 2px; }
-    .d { display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 10px; line-height: 1.2; }
-    .d b { font-size: 13px; font-weight: 500; }
-    .d small { font-size: 11px; color: var(--ink-3); }
-    .d.we, .dow .we { color: var(--accent); }
-    .d.out { opacity: 0.38; }
-    .d.today { background: var(--accent); color: var(--accent-ink); }
-    .d.today small { color: var(--accent-ink); }
-    .events { margin-top: 8px; padding: 8px 6px 0; border-top: 1px solid var(--line); display: flex; flex-direction: column; gap: 6px; }
-    .ev { padding-left: 10px; position: relative; }
-    .ev::before { content: ''; position: absolute; left: 0; top: 6px; width: 5px; height: 5px; border-radius: 50%; background: var(--accent); }
-    .ev-t { font-size: 13px; font-weight: 500; }
-    .ev-m { font-size: 11px; color: var(--ink-3); }
-    .ev-none { font-size: 12px; color: var(--ink-3); }
+        .widget-container {
+            width: 100%;
+            height: 100%;
+            padding: 22px 24px; 
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background: transparent; /* Bắt buộc trong suốt để lộ ảnh nền */
+        }
 
-    /* music */
-    .music { position: relative; flex: 1 1 0; padding: 0; overflow: hidden; display: flex; }
-    .bg { position: absolute; inset: 0; background-size: cover; background-position: center; opacity: 0; transition: opacity 1.5s ease-in-out; }
-    .bg.on { opacity: 1; }
-    .shade { position: absolute; inset: 0; background: rgba(14, 26, 49, 0.55); }
-    .music-in { position: relative; flex: 1; padding: 14px; display: flex; flex-direction: column; justify-content: center; gap: 14px; }
-    .m-top { display: flex; align-items: center; gap: 12px; }
-    .play { width: 38px; height: 38px; border-radius: 50%; border: 0; cursor: pointer; flex: none; background: var(--accent); color: var(--accent-ink); display: flex; align-items: center; justify-content: center; }
-    .play:hover { filter: brightness(1.08); }
-    .play .ico { width: 18px; height: 18px; }
-    .m-title { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 500; }
-    .live { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 8px var(--accent); animation: pulse 1.6s infinite; }
-    @keyframes pulse { 50% { opacity: 0.4; transform: scale(1.25); } }
-    .vol { display: flex; align-items: center; gap: 10px; color: var(--ink-2); }
-    input[type=range] { -webkit-appearance: none; appearance: none; flex: 1; background: transparent; margin: 0; }
-    input[type=range]::-webkit-slider-runnable-track { height: 4px; border-radius: 2px; background: rgba(232, 240, 252, 0.25); }
-    input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; margin-top: -5px; border-radius: 50%; background: var(--accent); cursor: pointer; }
+        /* 1. TOP SECTION */
+        .top-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            height: 96px;
+        }
 
-    /* timers */
-    .timers { flex: 1 1 0; display: flex; gap: 8px; padding: 10px; }
-    .tm { position: relative; flex: 1; min-width: 0; overflow: hidden; border-radius: 12px; background: var(--inset); border: 1px solid var(--line); }
-    .tm .fill { position: absolute; inset: 0 auto 0 0; width: 0; background: rgba(142, 197, 255, 0.2); transition: width 1s linear; }
-    .tm-in { position: relative; height: 100%; padding: 10px 12px; display: flex; flex-direction: column; justify-content: space-between; gap: 6px; }
-    .tm-label { align-self: flex-start; margin: -1px -4px; padding: 1px 4px; border-radius: 6px; font-size: 12px; color: var(--ink-2); cursor: text; }
-    .tm-label:hover { background: rgba(232, 240, 252, 0.1); }
-    .tm-label input { width: 100px; padding: 0; margin: 0; border: 0; background: transparent; color: var(--ink); font: inherit; outline: 0; }
-    .tm-time { font: 500 28px/1 var(--mono); cursor: pointer; font-variant-numeric: tabular-nums; }
-    .tm-time:hover { color: var(--accent); }
-    .tm-btns { display: flex; gap: 6px; }
-    .pb { font-size: 11px; font-weight: 500; padding: 4px 11px; border-radius: 999px; cursor: pointer; background: rgba(232, 240, 252, 0.08); border: 1px solid rgba(232, 240, 252, 0.18); }
-    .pb:hover { background: rgba(232, 240, 252, 0.16); }
-    .pb.go { background: var(--accent); color: var(--accent-ink); border-color: transparent; }
-    .pb.run { background: rgba(142, 197, 255, 0.16); color: var(--accent); border-color: rgba(142, 197, 255, 0.5); }
-    .pb.pause { color: var(--accent); border-color: rgba(142, 197, 255, 0.5); }
+        .weather-main { flex: 1; }
+        .greeting { font-size: 12px; font-weight: 500; opacity: 0.9; text-shadow: 0 1px 2px rgba(0,0,0,0.3); }
+        .temp-large { font-size: 38px; font-weight: 300; line-height: 1; margin: 2px 0 0 0; display: flex; text-shadow: 0 1px 4px rgba(0,0,0,0.2); }
+        .temp-large sup { font-size: 18px; margin-top: 4px; }
+        .weather-desc { font-size: 11px; margin-top: 2px; color: var(--text-muted); font-weight: 500; text-transform: capitalize; }
+        .location { font-size: 10px; margin-top: 3px; font-weight: 600; opacity: 0.85; }
 
-    /* weather */
-    .weather { display: grid; grid-template-columns: 200px 1fr; gap: 16px; align-items: center; }
-    .loc { display: inline-flex; align-items: center; gap: 6px; padding: 0; background: none; border: 0; cursor: pointer; font-size: 12px; font-weight: 500; color: var(--ink-2); }
-    .loc:hover { color: var(--ink); }
-    .edit { display: flex; gap: 6px; margin-top: 6px; }
-    .edit input { width: 120px; padding: 5px 8px; border-radius: 8px; border: 1px solid var(--line); background: var(--inset); color: var(--ink); font: inherit; font-size: 12px; }
-    .edit button { padding: 5px 10px; border: 0; border-radius: 8px; background: var(--accent); color: var(--accent-ink); font-size: 12px; font-weight: 500; cursor: pointer; }
-    .w-today { margin: 2px -8px -6px; padding: 4px 8px 6px; border-radius: 12px; cursor: pointer; }
-    .w-today:hover { background: rgba(232, 240, 252, 0.07); }
-    .w-today .ext { margin-left: auto; opacity: 0; transition: opacity 0.2s; }
-    .w-today:hover .ext, .w-today:focus-visible .ext { opacity: 0.7; }
-    .w-row { display: flex; align-items: center; gap: 12px; }
-    .temp { font: 400 44px/1.1 var(--mono); }
-    .w-icon { width: 34px; height: 34px; color: var(--accent); }
-    .w-icon svg { width: 100%; height: 100%; }
-    .w-desc { font-size: 13px; }
-    .w-desc::first-letter { text-transform: uppercase; }
-    .humid { margin-top: 3px; display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--ink-2); }
-    .fx { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
-    .fx div { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 8px 0; border-radius: 12px; background: var(--inset); font-size: 12px; }
-    .fx .fd { color: var(--ink-2); }
-    .fx .fi { width: 22px; height: 22px; }
-    .fx .fi svg { width: 100%; height: 100%; }
-    .fx .lo { color: var(--ink-3); }
+        .hl-temps { display: flex; gap: 4px; margin-top: 4px; }
+        .hl-badge { 
+            background: var(--bg-glass); 
+            border: 1px solid var(--border-glass); 
+            padding: 2px 6px; 
+            border-radius: 10px; 
+            font-size: 9px; 
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
 
-    /* timer edit modal */
-    .modal { position: absolute; inset: 0; z-index: 20; display: none; flex-direction: column; align-items: center; justify-content: center; gap: 10px; background: rgba(8, 15, 30, 0.86); backdrop-filter: blur(4px); border-radius: 22px; }
-    .modal.on { display: flex; }
-    .modal input { width: 76px; padding: 6px; text-align: center; font: 500 22px var(--mono); border-radius: 10px; border: 0; background: var(--inset); color: var(--ink); outline: 2px solid var(--accent); }
-    .modal .row { display: flex; gap: 8px; }
+        .date-main { text-align: right; }
+        .month { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; text-shadow: 0 1px 2px rgba(0,0,0,0.4); }
+        .date-large { font-size: 44px; font-weight: 800; line-height: 1; margin: -2px 0; text-shadow: 0 2px 5px rgba(0,0,0,0.4); }
+        .day-week { font-size: 12px; font-weight: 600; text-shadow: 0 1px 2px rgba(0,0,0,0.4); }
+        .lunar-badge { 
+            background: var(--bg-glass); 
+            border: 1px solid var(--border-glass); 
+            padding: 2px 8px; 
+            border-radius: 10px; 
+            font-size: 9px; 
+            margin-top: 4px; 
+            display: inline-block;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
 
-    @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
-</style>
+        /* 2. MIDDLE SECTION */
+        .mid-section {
+            flex: 1; 
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            margin: 8px 0;
+            overflow: hidden;
+        }
+
+        .events-list {
+            flex: 0.9;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 6px;
+            padding-right: 10px;
+            border-right: 1px solid var(--border-glass);
+            height: 100%;
+        }
+        
+        .event-item { position: relative; padding-left: 10px; }
+        .event-item::before { 
+            content: ''; 
+            position: absolute; 
+            left: 0; 
+            top: 5px; 
+            width: 4px; 
+            height: 4px; 
+            background: #ffffff; 
+            border-radius: 50%; 
+            box-shadow: 0 0 2px rgba(0,0,0,0.5);
+        }
+        .event-title { font-weight: 700; font-size: 11px; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-shadow: 0 1px 2px rgba(0,0,0,0.3); }
+        .event-time { font-size: 9px; color: var(--text-muted); margin: 1px 0; font-style: italic; }
+        .event-tag { font-size: 9px; color: var(--text-muted); }
+
+        .quote-box { font-size: 10px; font-style: italic; line-height: 1.35; color: var(--text-muted); text-shadow: 0 1px 2px rgba(0,0,0,0.3); }
+
+        .calendar-wrapper {
+            flex: 1.1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 100%;
+        }
+
+        .cal-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 2px;
+            text-align: center;
+        }
+        .cal-header { font-weight: 700; color: var(--text-muted); font-size: 9px; margin-bottom: 4px; text-shadow: 0 1px 2px rgba(0,0,0,0.3); }
+        .cal-header.weekend { color: var(--red-highlight); text-shadow: 0 1px 2px rgba(0,0,0,0.3); }
+        
+        .cal-day { 
+            width: 22px; 
+            height: 22px;
+            border-radius: 50%; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center; 
+            margin: auto; 
+            line-height: 1;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
+        .cal-day .solar { font-size: 10px; font-weight: 600; }
+        .cal-day .lunar { font-size: 6px; color: var(--text-muted); margin-top: 1px; }
+        
+        .cal-day.weekend { color: var(--red-highlight); }
+        .cal-day.weekend .lunar { color: rgba(239, 68, 68, 0.8); }
+        .cal-day.muted { opacity: 0.4; }
+        .cal-day.active { background: var(--red-highlight); color: #ffffff !important; text-shadow: none; box-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+        .cal-day.active .lunar { color: #ffffff; opacity: 0.9; }
+
+        /* 3. BOTTOM SECTION */
+        .bottom-section {
+            display: flex;
+            align-items: center;
+            border-top: 1px solid var(--border-glass);
+            padding-top: 10px;
+            height: 80px;
+        }
+
+        .b-left {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding-right: 10px;
+            border-right: 1px solid var(--border-glass);
+        }
+        .b-left-icon { font-size: 24px; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.4)); }
+        .b-left-info { display: flex; flex-direction: column; text-shadow: 0 1px 2px rgba(0,0,0,0.3); }
+        .b-left-temp { font-size: 14px; font-weight: 700; }
+        .b-left-range { font-size: 9px; color: var(--text-muted); }
+
+        .b-forecast {
+            display: flex;
+            flex: 1;
+            justify-content: space-around;
+        }
+        .f-col {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
+        .f-day { font-size: 8px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
+        .f-day.weekend { color: var(--red-highlight); }
+        .f-icon { font-size: 14px; margin: 1px 0; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.3)); }
+        .f-temp { font-size: 9px; display: flex; flex-direction: column; align-items: center; opacity: 0.9; }
+        .f-temp .min { color: var(--text-muted); }
+    </style>
 </head>
 <body>
-<div class="shell">
 
-    <section class="tile clock">
-        <div>
-            <div class="muted" id="greeting">Chào buổi sáng</div>
-            <div class="time"><span id="hm">00:00</span><span class="sec" id="sec">:00</span></div>
-            <div class="dates"><span id="solar"></span><span class="lunar" id="lunar"></span></div>
-        </div>
-        <figure class="quote">
-            <blockquote id="quote">Đang tải châm ngôn...</blockquote>
-            <figcaption id="author"></figcaption>
-        </figure>
-    </section>
-
-    <div class="mid">
-        <section class="tile cal">
-            <header class="cal-head">
-                <button class="nav" id="prev" aria-label="Tháng trước"><span class="ico" data-ico="left"></span></button>
-                <button class="cal-title" id="cal-title" title="Về tháng hiện tại"></button>
-                <button class="nav" id="next" aria-label="Tháng sau"><span class="ico" data-ico="right"></span></button>
-            </header>
-            <div class="dow"><div>T2</div><div>T3</div><div>T4</div><div>T5</div><div>T6</div><div class="we">T7</div><div class="we">CN</div></div>
-            <div class="days" id="days"></div>
-            <div class="events" id="events"></div>
-        </section>
-
-        <div class="stack">
-            <section class="tile music">
-                <div class="bg" id="bg-a"></div><div class="bg" id="bg-b"></div><div class="shade"></div>
-                <div class="music-in">
-                    <div class="m-top">
-                        <button class="play" id="play" aria-label="Phát hoặc tạm dừng nhạc">
-                            <span class="ico" id="icon-play" data-ico="play"></span>
-                            <span class="ico" id="icon-pause" data-ico="pause" hidden></span>
-                        </button>
-                        <div>
-                            <div class="m-title"><span class="live"></span>Lo-fi workspace</div>
-                            <div class="muted" id="status">Sẵn sàng phát nhạc...</div>
-                        </div>
-                    </div>
-                    <div class="vol"><span class="ico" data-ico="vol"></span><input type="range" id="vol" min="0" max="100" value="50" aria-label="Âm lượng"></div>
+    <div class="widget-container">
+        <!-- TOP SECTION -->
+        <div class="top-section">
+            <div class="weather-main">
+                <div class="greeting">Chào buổi sáng</div>
+                <div class="temp-large"><span id="cw-temp">--</span><sup>°</sup></div>
+                <div class="weather-desc" id="cw-desc">Đang tải...</div>
+                <div class="location">📍 Nam Định</div>
+                <div class="hl-temps" id="hl-container">
+                    <div class="hl-badge" id="cw-humid">💧 --%</div>
                 </div>
-            </section>
-            <section class="tile timers" id="timers"></section>
+            </div>
+            
+            <div class="date-main">
+                <div class="month">THÁNG <span id="current-month">--</span></div>
+                <div class="date-large" id="current-date">--</div>
+                <div class="day-week" id="current-day">--</div>
+                <div class="lunar-badge" id="lunar-date">--/-- Âm</div>
+            </div>
+        </div>
+
+        <!-- MIDDLE SECTION -->
+        <div class="mid-section">
+            <div class="events-list" id="events-container">
+                <div class="quote-box">"Đang tải..."</div>
+            </div>
+            
+            <div class="calendar-wrapper">
+                <div class="cal-grid">
+                    <div class="cal-header">T2</div>
+                    <div class="cal-header">T3</div>
+                    <div class="cal-header">T4</div>
+                    <div class="cal-header">T5</div>
+                    <div class="cal-header">T6</div>
+                    <div class="cal-header weekend">T7</div>
+                    <div class="cal-header weekend">CN</div>
+                </div>
+                <div class="cal-grid" id="calendar-days"></div>
+            </div>
+        </div>
+
+        <!-- BOTTOM SECTION -->
+        <div class="bottom-section">
+            <div class="b-left">
+                <div class="b-left-icon" id="cur-icon">⛅</div>
+                <div class="b-left-info">
+                    <div class="b-left-temp"><span id="b-cur-temp">--</span>°C</div>
+                    <div class="b-left-range" id="b-cur-range">--° • --°</div>
+                </div>
+            </div>
+            <div class="b-forecast" id="forecast-container"></div>
         </div>
     </div>
 
-    <section class="tile weather">
-        <div>
-            <button class="loc" id="loc"><span class="ico" data-ico="pin"></span><span id="loc-name">Nam Định</span><span class="ico" data-ico="pencil"></span></button>
-            <div class="edit" id="edit" hidden>
-                <input type="text" id="loc-input" placeholder="Nhập thành phố..." />
-                <button id="btn-save">Tìm</button>
-            </div>
-            <div class="w-today" id="w-today" role="link" tabindex="0" title="Xem thời tiết trên AccuWeather">
-                <div class="w-row"><div class="temp"><span id="cw-temp">--</span>°</div><span class="w-icon" id="cw-icon"></span></div>
-                <div class="w-desc" id="cw-desc">Đang tải...</div>
-                <div class="humid"><span class="ico" data-ico="drop"></span><span id="cw-humid">Độ ẩm: --%</span><span class="ico ext" data-ico="ext"></span></div>
-            </div>
-        </div>
-        <div class="fx" id="forecast"></div>
-    </section>
+    <script>
+        const API_KEY = '12fbb774abecc2ad4fe82b28334ac8ce'; 
+        const currentLat = 20.43; 
+        const currentLon = 106.17;
 
-    <div class="modal" id="modal">
-        <div class="muted">Đặt thời gian (phút)</div>
-        <input type="number" id="input-minutes" min="1" max="999">
-        <div class="row"><button class="pb go" id="modal-ok">Lưu</button><button class="pb" id="modal-cancel">Hủy</button></div>
-    </div>
-</div>
-
-<audio id="lofi-audio" crossorigin="anonymous" src="https://stream.zeno.fm/f3wvbbqmdg8uv" preload="none"></audio>
-
-<script src="quotes.js" charset="utf-8"></script>
-<script>
-/* ---------- helpers & icons ---------- */
-const $ = id => document.getElementById(id);
-const pad = n => String(n).padStart(2, '0');
-const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-const svg = d => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
-const ICON = {
-    left: '<path d="m15 18-6-6 6-6"/>', right: '<path d="m9 18 6-6-6-6"/>',
-    pin: '<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>',
-    ext: '<path d="M7 17 17 7M8 7h9v9"/>',
-    pencil: '<path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/>',
-    drop: '<path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/>',
-    play: '<path fill="currentColor" stroke="none" d="M7 4v16l13-8z"/>',
-    pause: '<path fill="currentColor" stroke="none" d="M6 4h4v16H6zM14 4h4v16h-4z"/>',
-    vol: '<path d="M11 5 6 9H2v6h4l5 4V5Z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/>',
-    sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>',
-    moon: '<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>',
-    cloudSun: '<path d="M12 2v2M4.93 4.93l1.41 1.41M20 12h2M19.07 4.93l-1.41 1.41M15.95 12.65a4 4 0 0 0-5.93-4.13M13 22H7a5 5 0 1 1 4.9-6H13a3 3 0 0 1 0 6Z"/>',
-    cloudMoon: '<path d="M13 22H7a5 5 0 1 1 4.9-6H13a3 3 0 0 1 0 6ZM10.1 9A6 6 0 0 1 16 4a4.24 4.24 0 0 0 6 6 6 6 0 0 1-3 5.2"/>',
-    cloud: '<path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/>',
-    rain: '<path d="M4 14.9A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.24M16 14v6M8 14v6M12 16v6"/>',
-    storm: '<path d="M6 16.33A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 .5 8.97M13 12l-3 5h4l-3 5"/>',
-    snow: '<path d="M12 2v20M2 12h20M4.93 4.93l14.14 14.14M19.07 4.93 4.93 19.07"/>',
-    fog: '<path d="M4 8h16M2 12h16M6 16h16M4 20h12"/>'
-};
-document.querySelectorAll('[data-ico]').forEach(el => { el.innerHTML = svg(ICON[el.dataset.ico]); });
-
-function weatherIcon(code) {
-    const k = code.slice(0, 2), night = code.endsWith('n');
-    const name = { '01': night ? 'moon' : 'sun', '02': night ? 'cloudMoon' : 'cloudSun', '03': 'cloud', '04': 'cloud',
-                   '09': 'rain', '10': 'rain', '11': 'storm', '13': 'snow', '50': 'fog' }[k] || 'cloud';
-    return svg(ICON[name]);
-}
-
-/* ---------- quotes (from Clock widget) ---------- */
-const builtinQuotes = [
-    { t: "Hành trình vạn dặm bắt đầu từ một bước chân.", a: "Lão Tử" },
-    { t: "Biết người biết ta, trăm trận không nguy.", a: "Tôn Vũ" },
-    { t: "Sự vinh quang lớn nhất không nằm ở việc không bao giờ thất bại, mà ở việc đứng dậy sau mỗi lần vấp ngã.", a: "Khổng Tử" },
-    { t: "Không có con đường dẫn đến hạnh phúc. Hạnh phúc chính là con đường.", a: "Thích Nhất Hạnh" },
-    { t: "Tôi tư duy, nên tôi tồn tại.", a: "René Descartes" },
-    { t: "Kẻ nào chưa từng mắc sai lầm là kẻ chưa bao giờ thử những điều mới mẻ.", a: "Albert Einstein" },
-    { t: "Thành công không phải là cuối cùng, thất bại không phải là chết người: Lòng can đảm đi tiếp mới là quan trọng.", a: "Winston Churchill" },
-    { t: "Biết mình là khởi đầu của mọi trí tuệ.", a: "Aristotle" },
-    { t: "Kẻ ngốc cho rằng mình khôn ngoan, nhưng người khôn ngoan biết mình là kẻ ngốc.", a: "William Shakespeare" },
-    { t: "Trí tuệ không phải là sản phẩm của việc học, mà là nỗ lực của cả một đời để đạt được nó.", a: "Albert Einstein" },
-    { t: "Thời gian của bạn là hữu hạn, đừng lãng phí nó để sống cuộc đời của người khác.", a: "Steve Jobs" },
-    { t: "Cách tốt nhất để dự đoán tương lai là tự tạo ra nó.", a: "Abraham Lincoln" },
-    { t: "Dù bạn nghĩ rằng bạn có thể hay không thể, bạn đều đúng.", a: "Henry Ford" },
-    { t: "Bí mật của việc tiến lên phía trước là bắt đầu.", a: "Mark Twain" },
-    { t: "Hai ngày quan trọng nhất trong cuộc đời bạn là ngày bạn được sinh ra và ngày bạn tìm ra lý do tại sao.", a: "Mark Twain" },
-    { t: "Đừng chờ đợi. Thời gian sẽ không bao giờ là 'vừa đúng'.", a: "Napoleon Hill" },
-    { t: "Cuộc sống không phải là việc tìm ra chính mình, mà là việc tạo ra chính mình.", a: "George Bernard Shaw" },
-    { t: "Bạn không bao giờ là quá già để đặt ra một mục tiêu khác hoặc mơ một giấc mơ mới.", a: "C.S. Lewis" },
-    { t: "Mọi thành tựu đều bắt đầu từ quyết định cố gắng.", a: "Gail Devers" },
-    { t: "Hãy hướng về phía mặt trời và bóng tối sẽ ngả về sau bạn.", a: "Helen Keller" },
-    { t: "Thành công không phải là chìa khóa của hạnh phúc. Hạnh phúc là chìa khóa của thành công.", a: "Albert Schweitzer" },
-    { t: "Những gì bạn làm hôm nay có thể cải thiện tất cả những ngày mai của bạn.", a: "Ralph Marston" },
-    { t: "Giới hạn duy nhất để chúng ta nhận ra ngày mai sẽ là những nghi ngờ của chúng ta ngày hôm nay.", a: "Franklin D. Roosevelt" },
-    { t: "Nơi nào có ý chí, nơi đó có con đường.", a: "Tục ngữ" }
-];
-// quotes.js (same folder) adds the extra quotes; the widget still works without it
-const famousQuotes = builtinQuotes.concat(Array.isArray(window.EXTRA_QUOTES) ? window.EXTRA_QUOTES : []);
-(function loadQuote() {
-    const q = famousQuotes[Math.floor(Math.random() * famousQuotes.length)];
-    const fig = document.querySelector('.quote');
-    fig.dataset.size = q.t.length <= 130 ? 's' : q.t.length <= 220 ? 'm' : 'l';
-    fig.title = q.t;
-    $('quote').textContent = `"${q.t}"`;
-    $('author').textContent = q.a;
-})();
-
-/* ---------- lunar calendar ---------- */
-const lunarFmt = new Intl.DateTimeFormat('en-US-u-ca-chinese', { day: 'numeric', month: 'numeric' });
-const lunarYearFmt = new Intl.DateTimeFormat('en-US-u-ca-chinese', { year: 'numeric' });
-function lunarParts(d) {
-    try {
-        const p = lunarFmt.formatToParts(d);
-        return { day: parseInt(p.find(x => x.type === 'day').value, 10), month: p.find(x => x.type === 'month').value };
-    } catch (e) { return { day: 0, month: '' }; }
-}
-function lunarLabel(d) {
-    try {
-        const l = lunarParts(d);
-        let y = d.getFullYear();
-        const ry = lunarYearFmt.formatToParts(d).find(x => x.type === 'relatedYear');
-        if (ry) y = parseInt(ry.value, 10);
-        const can = ["Canh", "Tân", "Nhâm", "Quý", "Giáp", "Ất", "Bính", "Đinh", "Mậu", "Kỷ"];
-        const chi = ["Thân", "Dậu", "Tuất", "Hợi", "Tý", "Sửu", "Dần", "Mão", "Thìn", "Tỵ", "Ngọ", "Mùi"];
-        return `Âm lịch ${pad(l.day)}/${String(l.month).padStart(2, '0')} ${can[y % 10]} ${chi[y % 12]}`;
-    } catch (e) { return 'Âm lịch VN'; }
-}
-
-/* ---------- clock ---------- */
-const DOW_FULL = ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'];
-function isoLocal(d) { return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10); }
-let lastDay = '';
-function tick() {
-    const now = new Date();
-    $('hm').textContent = `${pad(now.getHours())}:${pad(now.getMinutes())}`;
-    $('sec').textContent = `:${pad(now.getSeconds())}`;
-    const h = now.getHours();
-    $('greeting').textContent = h < 5 ? 'Chào buổi tối' : h < 11 ? 'Chào buổi sáng' : h < 13 ? 'Chào buổi trưa' : h < 18 ? 'Chào buổi chiều' : 'Chào buổi tối';
-    const key = isoLocal(now);
-    if (key !== lastDay) {
-        const first = lastDay === '';
-        lastDay = key;
-        $('solar').textContent = `${DOW_FULL[now.getDay()]}, ${pad(now.getDate())}/${pad(now.getMonth() + 1)}/${now.getFullYear()}`;
-        $('lunar').textContent = lunarLabel(now);
-        viewY = now.getFullYear(); viewM = now.getMonth();
-        renderCalendar();
-        if (!first) fetchHolidays();
-    }
-}
-
-/* ---------- month calendar ---------- */
-let viewY, viewM;
-function renderCalendar() {
-    const now = new Date();
-    const lead = (new Date(viewY, viewM, 1).getDay() + 6) % 7;
-    const dim = new Date(viewY, viewM + 1, 0).getDate();
-    const total = Math.ceil((lead + dim) / 7) * 7;
-    let html = '';
-    for (let i = 0; i < total; i++) {
-        const d = new Date(viewY, viewM, 1 - lead + i);
-        const dow = d.getDay();
-        const cls = ['d', d.getMonth() !== viewM ? 'out' : '', (dow === 0 || dow === 6) ? 'we' : '',
-                     d.toDateString() === now.toDateString() ? 'today' : ''].filter(Boolean).join(' ');
-        const l = lunarParts(d);
-        html += `<div class="${cls}"><b>${d.getDate()}</b><small>${l.day === 1 ? `1/${l.month}` : l.day}</small></div>`;
-    }
-    $('days').innerHTML = html;
-    $('cal-title').textContent = `Tháng ${viewM + 1}, ${viewY}`;
-}
-function shiftMonth(n) { const d = new Date(viewY, viewM + n, 1); viewY = d.getFullYear(); viewM = d.getMonth(); renderCalendar(); }
-$('prev').onclick = () => shiftMonth(-1);
-$('next').onclick = () => shiftMonth(1);
-$('cal-title').onclick = () => { const n = new Date(); viewY = n.getFullYear(); viewM = n.getMonth(); renderCalendar(); };
-
-/* ---------- events this week ---------- */
-function findMidAutumn(year) {
-    for (let i = 0; i < 62; i++) {
-        const d = new Date(year, 8, 1 + i);
-        const l = lunarParts(d);
-        if (l.month === '8' && l.day === 15) return isoLocal(d);
-    }
-    return `${year}-09-25`;
-}
-async function fetchHolidays() {
-    const box = $('events');
-    const now = new Date(), year = now.getFullYear();
-    const extra = [
-        { date: `${year}-03-08`, name: "Quốc tế Phụ nữ", type: "Kỷ niệm" },
-        { date: `${year}-03-26`, name: "Ngày Thành lập Đoàn", type: "Kỷ niệm" },
-        { date: findMidAutumn(year), name: "Tết Trung thu", type: "Lễ truyền thống" },
-        { date: `${year}-10-20`, name: "Ngày Phụ nữ VN", type: "Kỷ niệm" },
-        { date: `${year}-11-20`, name: "Ngày Nhà giáo VN", type: "Kỷ niệm" },
-        { date: `${year}-12-22`, name: "Ngày QĐND VN", type: "Kỷ niệm" }
-    ];
-    let all = [];
-    try {
-        const res = await fetch(`https://date.nager.at/api/v3/PublicHolidays/${year}/VN`);
-        const list = res.ok ? await res.json() : [];
-        if (Array.isArray(list)) all = list.map(h => ({ date: h.date, name: h.localName, type: "Quốc lễ" }));
-    } catch (e) { /* offline: fall back to the built-in events */ }
-    extra.forEach(e => { if (!all.some(x => x.date === e.date)) all.push(e); });
-
-    const start = new Date(now);
-    start.setDate(now.getDate() - ((now.getDay() + 6) % 7));
-    const end = new Date(start); end.setDate(start.getDate() + 6);
-    const a = isoLocal(start), b = isoLocal(end);
-    const week = all.filter(e => e.date >= a && e.date <= b).sort((x, y) => x.date.localeCompare(y.date)).slice(0, 2);
-
-    box.innerHTML = week.length
-        ? week.map(e => `<div class="ev"><div class="ev-t">${esc(e.name)}</div><div class="ev-m">Ngày ${e.date.slice(8)}/${e.date.slice(5, 7)} · ${esc(e.type)}</div></div>`).join('')
-        : '<div class="ev-none">Tuần này chưa có sự kiện.</div>';
-}
-
-/* ---------- weather ---------- */
-const API_KEY = '12fbb774abecc2ad4fe82b28334ac8ce';
-let lat = 20.43, lon = 106.17;
-const DOW_SHORT = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
-async function fetchWeather() {
-    try {
-        const base = `lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`;
-        const [cur, fc] = await Promise.all([
-            fetch(`https://api.openweathermap.org/data/2.5/weather?${base}&lang=vi`).then(r => r.json()),
-            fetch(`https://api.openweathermap.org/data/2.5/forecast?${base}`).then(r => r.json())
-        ]);
-        if (!cur.main || !fc.list) throw new Error('bad response');
-
-        $('cw-temp').textContent = Math.round(cur.main.temp);
-        $('cw-desc').textContent = cur.weather[0].description;
-        $('cw-humid').textContent = `Độ ẩm: ${cur.main.humidity}%`;
-        $('cw-icon').innerHTML = weatherIcon(cur.weather[0].icon);
-
-        const tz = (fc.city && fc.city.timezone) || 0;
-        const local = ts => new Date((ts + tz) * 1000);
-        const todayKey = local(Math.floor(Date.now() / 1000)).toISOString().slice(0, 10);
-        const days = {};
-        fc.list.forEach(it => {
-            const t = local(it.dt), key = t.toISOString().slice(0, 10);
-            const gap = Math.abs(t.getUTCHours() - 12);
-            const d = days[key] || (days[key] = { min: it.main.temp_min, max: it.main.temp_max, icon: it.weather[0].icon, gap });
-            d.min = Math.min(d.min, it.main.temp_min);
-            d.max = Math.max(d.max, it.main.temp_max);
-            if (gap < d.gap) { d.gap = gap; d.icon = it.weather[0].icon; }
-        });
-        $('forecast').innerHTML = Object.keys(days).filter(k => k > todayKey).sort().slice(0, 5).map(k => {
-            const d = days[k];
-            return `<div><span class="fd">${DOW_SHORT[new Date(k + 'T00:00:00Z').getUTCDay()]}</span>
-                <span class="fi">${weatherIcon(d.icon.replace('n', 'd'))}</span>
-                <span><span class="lo">${Math.round(d.min)}°</span> / ${Math.round(d.max)}°</span></div>`;
-        }).join('');
-    } catch (e) { $('cw-desc').textContent = 'Lỗi tải dữ liệu'; }
-}
-function toggleEdit(force) {
-    const box = $('edit');
-    box.hidden = force === undefined ? !box.hidden : !force;
-    if (!box.hidden) $('loc-input').focus();
-}
-async function changeLocation() {
-    const q = $('loc-input').value.trim();
-    if (!q) return;
-    $('btn-save').textContent = '...';
-    try {
-        const geo = await (await fetch(`https://api.openweathermap.org/geo/1.0/direct?q=${encodeURIComponent(q)}&limit=1&appid=${API_KEY}`)).json();
-        if (geo && geo.length) {
-            lat = geo[0].lat; lon = geo[0].lon;
-            $('loc-name').textContent = geo[0].name;
-            fetchWeather();
-            toggleEdit(false);
-        } else { alert('Không tìm thấy thành phố!'); }
-    } catch (e) { alert('Lỗi tìm kiếm!'); }
-    $('btn-save').textContent = 'Tìm';
-}
-function openAccuWeather() {
-    const q = encodeURIComponent($('loc-name').textContent.trim());
-    window.open(`https://www.accuweather.com/en/search-locations?query=${q}`, '_blank', 'noopener');
-}
-$('w-today').onclick = openAccuWeather;
-$('w-today').addEventListener('keydown', e => { if (e.key === 'Enter') openAccuWeather(); });
-$('loc').onclick = () => toggleEdit();
-$('btn-save').onclick = changeLocation;
-$('loc-input').addEventListener('keydown', e => { if (e.key === 'Enter') changeLocation(); });
-
-/* ---------- lo-fi player ---------- */
-const bgs = ['Background/hq720 (1).jpg', 'Background/hq720 (2).jpg', 'Background/hq720.jpg', 'Background/sddefault.jpg'];
-const layers = [$('bg-a'), $('bg-b')];
-let bgIndex = 0, layer = 0;
-function nextBackground() {
-    layers[layer].style.backgroundImage = `url("${bgs[bgIndex]}")`;
-    layers[layer].classList.add('on');
-    layers[1 - layer].classList.remove('on');
-    layer = 1 - layer;
-    bgIndex = (bgIndex + 1) % bgs.length;
-}
-nextBackground();
-setInterval(nextBackground, 600000);
-
-const audio = $('lofi-audio'), statusEl = $('status');
-let isPlaying = false;
-audio.volume = 0.5;
-function updateIcons() { $('icon-play').hidden = isPlaying; $('icon-pause').hidden = !isPlaying; }
-$('play').addEventListener('click', () => {
-    if (isPlaying) { audio.pause(); return; }
-    statusEl.textContent = 'Đang kết nối...';
-    audio.load();
-    const p = audio.play();
-    if (p !== undefined) p.catch(() => { statusEl.textContent = 'Lỗi phát nhạc'; isPlaying = false; updateIcons(); });
-});
-$('vol').addEventListener('input', e => { audio.volume = e.target.value / 100; });
-audio.addEventListener('play', () => { isPlaying = true; updateIcons(); statusEl.textContent = 'Đang phát nhạc - beats to relax'; });
-audio.addEventListener('pause', () => { isPlaying = false; updateIcons(); statusEl.textContent = 'Đã tạm dừng'; });
-audio.addEventListener('error', () => { isPlaying = false; updateIcons(); statusEl.textContent = 'Lỗi phát nhạc'; });
-
-/* ---------- timers ---------- */
-const NAME_KEY = 'lofi.timerNames';
-const timerNames = { 1: 'Timer 1', 2: 'Timer 2' };
-try {
-    const saved = JSON.parse(localStorage.getItem(NAME_KEY) || '{}');
-    [1, 2].forEach(i => { if (typeof saved[i] === 'string' && saved[i].trim()) timerNames[i] = saved[i].slice(0, 14); });
-} catch (e) { /* no storage: names just reset on restart */ }
-
-$('timers').innerHTML = [1, 2].map(id => `
-    <div class="tm">
-        <div class="fill" id="progress-${id}"></div>
-        <div class="tm-in">
-            <div class="tm-label" id="name-${id}" data-name="${id}" tabindex="0" title="Nhấp đúp để đổi tên">${esc(timerNames[id])}</div>
-            <div class="tm-time" id="time-${id}" data-id="${id}" tabindex="0" title="Nhấp đúp để sửa phút">20:00</div>
-            <div class="tm-btns">
-                <button class="pb go" id="btn-start-${id}" data-start="${id}">Start</button>
-                <button class="pb" id="btn-reset-${id}" data-reset="${id}">Reset</button>
-            </div>
-        </div>
-    </div>`).join('');
-
-const timers = {
-    1: { left: 1200, base: 1200, endAt: 0, iv: null, run: false },
-    2: { left: 1200, base: 1200, endAt: 0, iv: null, run: false }
-};
-const fmt = s => `${pad(Math.floor(s / 60))}:${pad(s % 60)}`;
-function paintTimer(id) {
-    const t = timers[id], a = $(`btn-start-${id}`), b = $(`btn-reset-${id}`);
-    $(`time-${id}`).textContent = fmt(t.left);
-    $(`progress-${id}`).style.width = `${((t.base - t.left) / t.base) * 100}%`;
-    a.textContent = t.run ? 'Run' : 'Start';
-    a.className = 'pb ' + (t.run ? 'run' : 'go');
-    b.textContent = t.run ? 'Pause' : 'Reset';
-    b.className = 'pb' + (t.run ? ' pause' : '');
-}
-function remaining(t) { return Math.max(0, Math.ceil((t.endAt - Date.now()) / 1000)); }
-function startTimer(id) {
-    const t = timers[id];
-    if (t.run) { errorSound(); return; }
-    if (t.left <= 0) t.left = t.base;
-    t.run = true;
-    t.endAt = Date.now() + t.left * 1000;
-    startSound();
-    t.iv = setInterval(() => {
-        t.left = remaining(t);
-        if (t.left <= 0) { clearInterval(t.iv); t.run = false; alarmSound(); }
-        paintTimer(id);
-    }, 250);
-    paintTimer(id);
-}
-function pauseOrReset(id) {
-    const t = timers[id];
-    if (t.run) { clearInterval(t.iv); t.left = remaining(t); t.run = false; }
-    else { t.left = t.base; }
-    paintTimer(id);
-}
-let editingId = null;
-function openEdit(id) {
-    if (timers[id].run) { errorSound(); return; }
-    editingId = id;
-    $('input-minutes').value = Math.floor(timers[id].base / 60);
-    $('modal').classList.add('on');
-    $('input-minutes').focus();
-    $('input-minutes').select();
-}
-function closeEdit() { $('modal').classList.remove('on'); editingId = null; }
-function saveEdit() {
-    const mins = parseInt($('input-minutes').value, 10);
-    if (mins > 0 && editingId !== null) {
-        timers[editingId].base = timers[editingId].left = mins * 60;
-        paintTimer(editingId);
-    }
-    closeEdit();
-}
-$('timers').addEventListener('click', e => {
-    if (e.target.dataset.start) startTimer(e.target.dataset.start);
-    if (e.target.dataset.reset) pauseOrReset(e.target.dataset.reset);
-});
-function renameTimer(id) {
-    const el = $(`name-${id}`);
-    if (el.querySelector('input')) return;
-    const input = document.createElement('input');
-    input.value = timerNames[id];
-    input.maxLength = 14;
-    input.setAttribute('aria-label', 'Tên timer');
-    el.textContent = '';
-    el.appendChild(input);
-    input.focus(); input.select();
-    let done = false;
-    const finish = save => {
-        if (done) return;
-        done = true;
-        if (save) {
-            timerNames[id] = input.value.trim() || `Timer ${id}`;
-            try { localStorage.setItem(NAME_KEY, JSON.stringify(timerNames)); } catch (e) { /* ignore */ }
+        let isWeatherLoaded = false;
+        function __wweb2WaitMillisecondsToWidgetIsReady() {
+            return isWeatherLoaded ? 0 : 2000;
         }
-        el.textContent = timerNames[id];
-    };
-    input.addEventListener('keydown', e => { if (e.key === 'Enter') finish(true); else if (e.key === 'Escape') finish(false); });
-    input.addEventListener('blur', () => finish(true));
-}
-$('timers').addEventListener('dblclick', e => {
-    if (e.target.dataset.id) openEdit(e.target.dataset.id);
-    if (e.target.dataset.name) renameTimer(e.target.dataset.name);
-});
-$('timers').addEventListener('keydown', e => {
-    if (e.key !== 'Enter') return;
-    if (e.target.dataset.id) openEdit(e.target.dataset.id);
-    if (e.target.dataset.name) renameTimer(e.target.dataset.name);
-});
-$('modal-ok').onclick = saveEdit;
-$('modal-cancel').onclick = closeEdit;
-$('input-minutes').addEventListener('keydown', e => { if (e.key === 'Enter') saveEdit(); if (e.key === 'Escape') closeEdit(); });
 
-/* ---------- sounds ---------- */
-let actx = null;
-function beeps(count, gap, { type, freq, vol, hold, tail }) {
-    const AC = window.AudioContext || window.webkitAudioContext;
-    if (!AC) return;
-    actx = actx || new AC();
-    if (actx.state === 'suspended') actx.resume();
-    for (let i = 0; i < count; i++) {
-        const osc = actx.createOscillator(), gain = actx.createGain();
-        osc.type = type; osc.frequency.value = freq;
-        osc.connect(gain); gain.connect(actx.destination);
-        const t0 = actx.currentTime + i * gap;
-        gain.gain.setValueAtTime(0, t0);
-        gain.gain.linearRampToValueAtTime(vol, t0 + 0.02);
-        gain.gain.setValueAtTime(vol, t0 + hold);
-        gain.gain.linearRampToValueAtTime(0, t0 + tail);
-        osc.start(t0); osc.stop(t0 + tail + 0.05);
-    }
-}
-const startSound = () => beeps(2, 0.2, { type: 'sine', freq: 1500, vol: 0.3, hold: 0.1, tail: 0.15 });
-const errorSound = () => beeps(3, 0.15, { type: 'square', freq: 300, vol: 0.2, hold: 0.08, tail: 0.1 });
-const alarmSound = () => beeps(5, 1, { type: 'sine', freq: 2500, vol: 0.4, hold: 0.5, tail: 0.55 });
+        const iconMap = {
+            '01d':'☀️','01n':'🌑','02d':'🌤️','02n':'☁️',
+            '03d':'⛅','03n':'⛅','04d':'☁️','04n':'☁️',
+            '09d':'🌧️','09n':'🌧️','10d':'🌦️','10n':'🌧️',
+            '11d':'⛈️','11n':'⛈️','13d':'❄️','13n':'❄️',
+            '50d':'🌫️','50n':'🌫️'
+        };
 
-/* ---------- start ---------- */
-tick();
-setInterval(tick, 1000);
-fetchHolidays();
-fetchWeather();
-setInterval(fetchWeather, 3600000);
-</script>
+        const daysVNHeader = ["CN", "THỨ 2", "THỨ 3", "THỨ 4", "THỨ 5", "THỨ 6", "THỨ 7"];
+
+        function getLocalISODate(date) {
+            const offset = date.getTimezoneOffset() * 60000;
+            return new Date(date.getTime() - offset).toISOString().split('T')[0];
+        }
+
+        function getLunarDayMonth(date) {
+            try {
+                const formatter = new Intl.DateTimeFormat('en-US-u-ca-chinese', { day: 'numeric', month: 'numeric' });
+                const parts = formatter.formatToParts(date);
+                const lDay = parts.find(p => p.type === 'day').value;
+                const lMonth = parts.find(p => p.type === 'month').value;
+                return lDay === '1' ? `${lDay}/${lMonth}` : lDay;
+            } catch (e) { return ''; }
+        }
+
+        function initCalendar() {
+            try {
+                const now = new Date();
+                const y = now.getFullYear(); 
+                const m = now.getMonth(); 
+                const d = now.getDate();
+                
+                document.getElementById('current-month').innerText = m + 1;
+                document.getElementById('current-date').innerText = d;
+                
+                const fullDays = ["Chủ Nhật", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy"];
+                document.getElementById('current-day').innerText = fullDays[now.getDay()];
+                
+                try {
+                    const formatter = new Intl.DateTimeFormat('en-US-u-ca-chinese', { day: 'numeric', month: 'numeric' });
+                    const parts = formatter.formatToParts(now);
+                    const lDay = parts.find(p => p.type === 'day').value.padStart(2, '0');
+                    const lMonth = parts.find(p => p.type === 'month').value.padStart(2, '0');
+                    
+                    const can = ["Canh", "Tân", "Nhâm", "Quý", "Giáp", "Ất", "Bính", "Đinh", "Mậu", "Kỷ"];
+                    const chi = ["Thân", "Dậu", "Tuất", "Hợi", "Tý", "Sửu", "Dần", "Mão", "Thìn", "Tỵ", "Ngọ", "Mùi"];
+                    const canChi = can[y % 10] + " " + chi[y % 12];
+                    
+                    document.getElementById('lunar-date').innerText = `${lDay}/${lMonth} ${canChi}`;
+                } catch (e) { document.getElementById('lunar-date').innerText = 'Âm lịch'; }
+
+                const firstDayOfMonthJS = new Date(y, m, 1).getDay(); 
+                const firstDayIdx = (firstDayOfMonthJS + 6) % 7; 
+                
+                const daysInMonth = new Date(y, m + 1, 0).getDate();
+                const prevDays = new Date(y, m, 0).getDate();
+                
+                let html = '';
+                
+                for (let i = 0; i < firstDayIdx; i++) {
+                    let prevD = prevDays - firstDayIdx + i + 1;
+                    let prevDateObj = new Date(y, m - 1, prevD);
+                    let lunarStr = getLunarDayMonth(prevDateObj);
+                    html += `<div class="cal-day muted"><div class="solar">${prevD}</div><div class="lunar">${lunarStr}</div></div>`;
+                }
+                
+                for (let i = 1; i <= daysInMonth; i++) {
+                    let dateObj = new Date(y, m, i);
+                    let jsDay = dateObj.getDay(); 
+                    let mappedIdx = (jsDay + 6) % 7;
+                    let isWeekend = (mappedIdx === 5 || mappedIdx === 6); 
+                    
+                    let cls = "cal-day";
+                    if (isWeekend) cls += " weekend";
+                    if (i === d) cls += " active";
+                    
+                    let lunarStr = getLunarDayMonth(dateObj);
+                    html += `<div class="${cls}"><div class="solar">${i}</div><div class="lunar">${lunarStr}</div></div>`;
+                }
+                document.getElementById('calendar-days').innerHTML = html;
+            } catch (e) { console.log(e); }
+        }
+
+        async function fetchWeather() {
+            try {
+                const curRes = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${currentLat}&lon=${currentLon}&appid=${API_KEY}&units=metric&lang=vi`);
+                const curData = await curRes.json();
+                
+                const roundedTemp = Math.round(curData.main.temp);
+                document.getElementById('cw-temp').innerText = roundedTemp;
+                document.getElementById('cw-desc').innerText = curData.weather[0].description;
+                document.getElementById('cw-humid').innerText = `💧 Độ ẩm: ${curData.main.humidity}%`;
+                document.getElementById('b-cur-temp').innerText = roundedTemp;
+                document.getElementById('cur-icon').innerText = iconMap[curData.weather[0].icon] || '⛅';
+
+                const forRes = await fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${currentLat}&lon=${currentLon}&appid=${API_KEY}&units=metric`);
+                const forData = await forRes.json();
+
+                const daily = {};
+                forData.list.forEach(item => {
+                    const date = item.dt_txt.split(' ')[0];
+                    if (!daily[date]) {
+                        daily[date] = { min: item.main.temp_min, max: item.main.temp_max, icon: item.weather[0].icon };
+                    } else {
+                        daily[date].min = Math.min(daily[date].min, item.main.temp_min);
+                        daily[date].max = Math.max(daily[date].max, item.main.temp_max);
+                        if (item.weather[0].icon.includes('d')) daily[date].icon = item.weather[0].icon;
+                    }
+                });
+
+                const dates = Object.keys(daily).slice(0, 6);
+                if (dates.length > 0) {
+                    const todayData = daily[dates[0]];
+                    document.getElementById('b-cur-range').innerText = `${Math.round(todayData.min)}° • ${Math.round(todayData.max)}°`;
+                }
+
+                let fHtml = '';
+                dates.slice(0, 5).forEach(dStr => {
+                    const dData = daily[dStr];
+                    const dObj = new Date(dStr);
+                    const dayIdx = dObj.getDay();
+                    const dName = daysVNHeader[dayIdx];
+                    const isWeekend = (dayIdx === 0 || dayIdx === 6);
+                    const emoji = iconMap[dData.icon] || '⛅';
+                    
+                    fHtml += `
+                        <div class="f-col">
+                            <div class="f-day ${isWeekend ? 'weekend' : ''}">${dName}</div>
+                            <div class="f-icon">${emoji}</div>
+                            <div class="f-temp">
+                                <span>↓ ${Math.round(dData.min)}°</span>
+                                <span class="min">↑ ${Math.round(dData.max)}°</span>
+                            </div>
+                        </div>
+                    `;
+                });
+                document.getElementById('forecast-container').innerHTML = fHtml;
+            } catch(e) {
+                document.getElementById('cw-desc').innerText = "Lỗi kết nối";
+            } finally {
+                isWeatherLoaded = true;
+            }
+        }
+
+        async function fetchHolidays() {
+            const container = document.getElementById('events-container');
+            try {
+                const now = new Date();
+                const year = now.getFullYear();
+                const res = await fetch(`https://date.nager.at/api/v3/PublicHolidays/${year}/VN`);
+                const publicHolidays = await res.json();
+
+                const extraEvents = [
+                    { date: `${year}-03-08`, localName: "Quốc tế Phụ nữ", type: "Ngày lễ Việt Nam" },
+                    { date: `${year}-09-25`, localName: "Tết Trung thu", type: "Ngày lễ Việt Nam" },
+                    { date: `${year}-10-20`, localName: "Phụ nữ Việt Nam", type: "Ngày lễ Việt Nam" },
+                    { date: `${year}-11-20`, localName: "Nhà giáo Việt Nam", type: "Ngày lễ Việt Nam" }
+                ];
+
+                let allEvents = publicHolidays.map(h => ({ date: h.date, localName: h.localName, type: "Ngày lễ Việt Nam" }));
+                extraEvents.forEach(e => { if (!allEvents.some(item => item.date === e.date)) allEvents.push(e); });
+
+                const startStr = getLocalISODate(now);
+                const upcoming = allEvents.filter(e => e.date >= startStr).sort((a,b) => a.date.localeCompare(b.date));
+
+                if (upcoming.length > 0) {
+                    container.innerHTML = '';
+                    upcoming.slice(0, 2).forEach(ev => {
+                        const parts = ev.date.split('-');
+                        const formattedDate = `${parts[2]}-${parts[1]}`;
+                        container.innerHTML += `
+                            <div class="event-item">
+                                <p class="event-title">${ev.localName}</p>
+                                <p class="event-time">${formattedDate} All Day</p>
+                                <p class="event-tag">${ev.type}</p>
+                            </div>
+                        `;
+                    });
+                } else {
+                    container.innerHTML = `<div class="quote-box">"Chúc bạn một ngày làm việc hiệu quả và vui vẻ!"</div>`;
+                }
+            } catch (e) {
+                container.innerHTML = `<div class="quote-box">"Sự vinh quang lớn nhất nằm ở việc đứng dậy sau mỗi lần vấp ngã."</div>`;
+            }
+        }
+
+        initCalendar();
+        fetchHolidays();
+        fetchWeather();
+    </script>
 </body>
 </html>
